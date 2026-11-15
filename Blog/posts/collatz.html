@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>try{var d=document.documentElement,t=localStorage.getItem('theme');if(t)d.setAttribute('data-theme',t);if(sessionStorage.getItem('nav')){d.classList.add('nav-in');sessionStorage.removeItem('nav')}else if(document.querySelector&&!sessionStorage.getItem('seen')&&false)d.classList.add('loading')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La conjetura de Collatz — Código &amp; Teoremas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html">codigo&teoremas<i></i></a>
+    <nav>
+      <a href="../index.html#entradas">Entradas</a>
+      <button id="theme-toggle" aria-label="Cambiar tema">Oscuro</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="post">
+    <header>
+      <span class="badge">nota</span>
+      <h1>La conjetura de Collatz: simple de escribir, imposible de probar</h1>
+      <span class="meta">20 oct 2026 · 6 min de lectura</span>
+    </header>
+
+    <p>Toma cualquier entero positivo. Si es par, divídelo entre 2. Si es impar, multiplícalo por 3 y súmale 1. Repite. La conjetura afirma que, sin importar con qué número empieces, <strong>siempre llegarás a 1</strong>.</p>
+
+    <p>Formalmente, definimos la función:</p>
+
+    $$
+    f(n) = \begin{cases} n/2 & \text{si } n \equiv 0 \pmod 2 \\ 3n + 1 & \text{si } n \equiv 1 \pmod 2 \end{cases}
+    $$
+
+    <blockquote>Paul Erdős dijo sobre este problema: «las matemáticas aún no están preparadas para tales problemas».</blockquote>
+
+    <h2>En código</h2>
+    <pre><code><span class="kw">def</span> <span class="fn">collatz</span>(n):
+    pasos = <span class="num">0</span>
+    <span class="kw">while</span> n != <span class="num">1</span>:
+        n = n // <span class="num">2</span> <span class="kw">if</span> n % <span class="num">2</span> == <span class="num">0</span> <span class="kw">else</span> <span class="num">3</span> * n + <span class="num">1</span>
+        pasos += <span class="num">1</span>
+    <span class="kw">return</span> pasos
+
+<span class="fn">print</span>(<span class="fn">collatz</span>(<span class="num">27</span>))  <span class="cm"># 111 pasos</span></code></pre>
+
+    <div class="demo">
+      <h4>▶ Pruébalo</h4>
+      <input id="collatz-input" type="number" min="1" value="27">
+      <button id="collatz-btn">Calcular</button>
+      <output id="collatz-out">Resultado aquí…</output>
+    </div>
+
+    <h2>¿Por qué es difícil?</h2>
+    <p>Los pasos $n \to 3n+1$ hacen crecer el número, mientras que $n \to n/2$ lo reduce. Heurísticamente, en promedio cada par de pasos multiplica por $\sqrt{3}/2 \approx 0.87 &lt; 1$, así que esperaríamos que las trayectorias bajen. Pero «esperar» no es demostrar: la conjetura se ha verificado por computadora hasta más de $2^{68}$ y sigue abierta.</p>
+
+    <a class="back" href="../index.html">← Volver al blog</a>
+  </article>
+</main>
+
+<footer><p>© 2026 Código &amp; Teoremas</p></footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/bg.js"></script>
+<script defer src="../js/metrics.js?v=2" data-site-id="codigo-teoremas" data-api-url="http://localhost:8012"></script>
+</body>
+</html>

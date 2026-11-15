@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>try{var d=document.documentElement,t=localStorage.getItem('theme');if(t)d.setAttribute('data-theme',t);if(sessionStorage.getItem('nav')){d.classList.add('nav-in');sessionStorage.removeItem('nav')}else if(document.querySelector&&!sessionStorage.getItem('seen')&&false)d.classList.add('loading')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Un graficador de funciones — Código &amp; Teoremas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html">codigo&teoremas<i></i></a>
+    <nav>
+      <a href="../index.html#entradas">Entradas</a>
+      <button id="theme-toggle" aria-label="Cambiar tema">Oscuro</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="post">
+    <header>
+      <span class="badge">proyecto</span>
+      <h1>Un graficador de funciones en 40 líneas</h1>
+      <span class="meta">12 nov 2026 · 5 min de lectura</span>
+    </header>
+
+    <p>Quería ver las funciones que aparecen en mis clases de cálculo sin abrir otro programa. El resultado es una pequeña herramienta con <code>&lt;canvas&gt;</code> que dibuja cualquier $f(x)$ que escribas.</p>
+
+    <div class="demo">
+      <h4>▶ Pruébalo (usa x, sin, cos, tan, sqrt, abs, log, exp, pi, ^)</h4>
+      <input id="plot-input" type="text" value="sin(x) * x / 2">
+      <button id="plot-btn">Graficar</button>
+      <canvas id="plot-canvas" width="640" height="400"></canvas>
+      <output id="plot-out"></output>
+    </div>
+
+    <h2>Cómo funciona</h2>
+    <p>La idea es muestrear la función. Para cada columna de píxeles $p$ calculamos la coordenada matemática y la convertimos de vuelta a pantalla:</p>
+
+    $$ x = \frac{p - W/2}{s}, \qquad p_y = \frac{H}{2} - f(x)\cdot s $$
+
+    <p>donde $s$ es la escala (píxeles por unidad). Después se unen los puntos con líneas. Si $f(x)$ no es finito (por ejemplo $\log(0)$), se levanta el «lápiz» para no dibujar una línea falsa.</p>
+
+    <pre><code><span class="kw">const</span> x = (px - W / <span class="num">2</span>) / s;
+<span class="kw">const</span> y = <span class="fn">f</span>(x);
+<span class="kw">const</span> py = H / <span class="num">2</span> - y * s;
+<span class="fn">Number</span>.<span class="fn">isFinite</span>(y) ? ctx.<span class="fn">lineTo</span>(px, py) : ctx.<span class="fn">moveTo</span>(px, py);</code></pre>
+
+    <h2>Próximos pasos</h2>
+    <ul>
+      <li>Zoom y desplazamiento con el ratón.</li>
+      <li>Derivada numérica: $f'(x) \approx \frac{f(x+h)-f(x-h)}{2h}$.</li>
+      <li>Varias funciones a la vez.</li>
+    </ul>
+
+    <a class="back" href="../index.html">← Volver</a>
+  </article>
+</main>
+
+<footer><div class="wrap">© 2026 Código &amp; Teoremas</div></footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/bg.js"></script>
+<script defer src="../js/metrics.js?v=2" data-site-id="codigo-teoremas" data-api-url="http://localhost:8012"></script>
+</body>
+</html>

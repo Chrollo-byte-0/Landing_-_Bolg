@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>try{var d=document.documentElement,t=localStorage.getItem('theme');if(t)d.setAttribute('data-theme',t);if(sessionStorage.getItem('nav')){d.classList.add('nav-in');sessionStorage.removeItem('nav')}else if(document.querySelector&&!sessionStorage.getItem('seen')&&false)d.classList.add('loading')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El mayor primo conocido — Código &amp; Teoremas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html">codigo&teoremas<i></i></a>
+    <nav>
+      <a href="../index.html#entradas">Entradas</a>
+      <button id="theme-toggle" aria-label="Cambiar tema">Oscuro</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="post">
+    <header>
+      <span class="badge">noticia</span>
+      <h1>El mayor primo conocido y cómo se encuentran</h1>
+      <span class="meta">8 nov 2026 · 4 min de lectura</span>
+    </header>
+
+    <p>El mayor número primo conocido, hasta donde sé, es $2^{136\,279\,841} - 1$, descubierto en octubre de 2024 dentro del proyecto colaborativo GIMPS. Tiene más de 41 millones de dígitos. Conviene verificar en <em>mersenne.org</em> si ya fue superado.</p>
+
+    <h2>¿Qué es un primo de Mersenne?</h2>
+    <p>Es un primo de la forma $M_p = 2^p - 1$, con $p$ primo. No todos los $p$ funcionan: $M_{11} = 2047 = 23 \cdot 89$ no es primo.</p>
+
+    <h2>El test de Lucas–Lehmer</h2>
+    <p>Para $p$ impar, definimos $s_0 = 4$ y $s_{k+1} = s_k^2 - 2 \pmod{M_p}$. Entonces:</p>
+
+    $$ M_p \text{ es primo} \iff s_{p-2} \equiv 0 \pmod{M_p} $$
+
+    <pre><code><span class="kw">def</span> <span class="fn">lucas_lehmer</span>(p):
+    m = (<span class="num">1</span> &lt;&lt; p) - <span class="num">1</span>
+    s = <span class="num">4</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(p - <span class="num">2</span>):
+        s = (s * s - <span class="num">2</span>) % m
+    <span class="kw">return</span> s == <span class="num">0</span>
+
+<span class="fn">print</span>([p <span class="kw">for</span> p <span class="kw">in</span> [<span class="num">3</span>, <span class="num">5</span>, <span class="num">7</span>, <span class="num">11</span>, <span class="num">13</span>] <span class="kw">if</span> <span class="fn">lucas_lehmer</span>(p)])
+<span class="cm"># [3, 5, 7, 13]</span></code></pre>
+
+    <p>Es un test muy eficiente, por eso los récords de primos suelen ser de Mersenne.</p>
+
+    <a class="back" href="../index.html">← Volver</a>
+  </article>
+</main>
+
+<footer><div class="wrap">© 2026 Código &amp; Teoremas</div></footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/bg.js"></script>
+<script defer src="../js/metrics.js?v=2" data-site-id="codigo-teoremas" data-api-url="http://localhost:8012"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>try{var d=document.documentElement,t=localStorage.getItem('theme');if(t)d.setAttribute('data-theme',t);if(sessionStorage.getItem('nav')){d.classList.add('nav-in');sessionStorage.removeItem('nav')}else if(document.querySelector&&!sessionStorage.getItem('seen')&&false)d.classList.add('loading')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Un bug de redondeo — Código &amp; Teoremas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html">codigo&teoremas<i></i></a>
+    <nav>
+      <a href="../index.html#entradas">Entradas</a>
+      <button id="theme-toggle" aria-label="Cambiar tema">Oscuro</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="post">
+    <header>
+      <span class="badge">día a día</span>
+      <h1>Una semana persiguiendo un bug de redondeo</h1>
+      <span class="meta">14 nov 2026 · 3 min de lectura</span>
+    </header>
+
+    <p>Esta semana mi programa decía que dos números eran distintos cuando matemáticamente eran iguales. Tardé más de lo que me gustaría admitir en darme cuenta de que no era un bug de lógica.</p>
+
+    <pre><code><span class="fn">console</span>.<span class="fn">log</span>(<span class="num">0.1</span> + <span class="num">0.2</span>);          <span class="cm">// 0.30000000000000004</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="num">0.1</span> + <span class="num">0.2</span> === <span class="num">0.3</span>);  <span class="cm">// false</span></code></pre>
+
+    <h2>Qué pasa</h2>
+    <p>Los números en punto flotante (IEEE 754) se guardan en binario. Igual que $1/3$ no tiene expansión decimal finita, $0.1 = 1/10$ no tiene expansión binaria finita, así que se guarda una aproximación con un error de orden $2^{-53}$.</p>
+
+    <h2>Lo que cambié</h2>
+    <p>Comparar con tolerancia en vez de igualdad exacta:</p>
+
+    <pre><code><span class="kw">const</span> casiIgual = (a, b, eps = <span class="num">1e-9</span>) =&gt; <span class="fn">Math</span>.<span class="fn">abs</span>(a - b) &lt; eps;
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">casiIgual</span>(<span class="num">0.1</span> + <span class="num">0.2</span>, <span class="num">0.3</span>)); <span class="cm">// true</span></code></pre>
+
+    <blockquote>Lección de la semana: el error numérico también es matemática, y vale la pena entenderlo antes de que aparezca en producción.</blockquote>
+
+    <a class="back" href="../index.html">← Volver</a>
+  </article>
+</main>
+
+<footer><div class="wrap">© 2026 Código &amp; Teoremas</div></footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/bg.js"></script>
+<script defer src="../js/metrics.js?v=2" data-site-id="codigo-teoremas" data-api-url="http://localhost:8012"></script>
+</body>
+</html>

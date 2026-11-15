@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101412">
+  <title>Admin CMS | Isaías</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script defer src="/admin/admin.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/">IS<span>.</span></a>
+      <div>
+        <p class="eyebrow">CMS · LANDING + BLOG</p>
+        <h1>Centro de administración</h1>
+      </div>
+      <button id="logout" class="button button-quiet hidden" type="button">Cerrar sesión</button>
+    </header>
+
+    <section id="login-view" class="login-card">
+      <p class="eyebrow">ACCESO PRIVADO</p>
+      <h2>Inicia sesión</h2>
+      <p class="muted">Administra tus dos espacios desde un mismo panel.</p>
+      <form id="login-form">
+        <label>Correo<input id="email" type="email" autocomplete="username" required></label>
+        <label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+        <button class="button" type="submit">Entrar al CMS</button>
+      </form>
+      <p id="login-status" class="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="dashboard-head">
+        <div>
+          <p class="eyebrow">VISTA GENERAL</p>
+          <h2>Tu contenido, en un solo lugar.</h2>
+        </div>
+        <label class="site-picker">Espacio
+          <select id="site-select" aria-label="Selecciona landing o blog"></select>
+        </label>
+      </div>
+
+      <section class="service-grid" aria-label="Estado de servicios">
+        <a class="service-card" href="/api/health" target="_blank" rel="noopener">
+          <span class="service-dot" id="cms-dot"></span><span><b>CMS REST</b><small>Contenido y autenticación</small></span><i>8000</i>
+        </a>
+        <a class="service-card" id="graphql-link" href="#" target="_blank" rel="noopener">
+          <span class="service-dot" id="graphql-dot"></span><span><b>GraphQL</b><small>Consultas y gestión</small></span><i>8001</i>
+        </a>
+        <a class="service-card" id="builder-link" href="#" target="_blank" rel="noopener">
+          <span class="service-dot" id="builder-dot"></span><span><b>Builder</b><small>Publicación de sitios</small></span><i>8013</i>
+        </a>
+        <a class="service-card" id="metrics-link" href="#" target="_blank" rel="noopener">
+          <span class="service-dot" id="metrics-dot"></span><span><b>Métricas</b><small>Visitas por espacio</small></span><i>8012</i>
+        </a>
+      </section>
+
+      <section class="metrics-grid" aria-label="Métricas del espacio">
+        <article class="metric-card"><span>Visitas</span><strong id="views">—</strong><small id="metric-mode">Cargando métricas…</small></article>
+        <article class="metric-card"><span>Visitantes únicos</span><strong id="visitors">—</strong><small>Por espacio seleccionado</small></article>
+        <article class="metric-card"><span>Tipo de contenido</span><strong id="site-kind">—</strong><small id="site-slug"></small></article>
+      </section>
+
+      <section class="content-card">
+        <div class="content-heading">
+          <div><p class="eyebrow">CONTENIDO DEL ESPACIO</p><h2 id="content-title">Contenido</h2></div>
+          <div class="content-tools"><span id="content-count" class="count"></span><button id="publish-site" class="button" type="button">Publicar sitio</button></div>
+        </div>
+        <div class="content-layout">
+          <div id="content-list" class="content-list"></div>
+          <form id="content-form" class="editor">
+            <h3 id="editor-title">Crear contenido</h3>
+            <label>Título<input id="item-title" maxlength="200" required></label>
+            <label>Slug (opcional)<input id="item-slug" maxlength="160" placeholder="se-genera-del-titulo"></label>
+            <label id="page-type-field">Tipo
+              <select id="page-type"><option value="landing">Landing principal</option><option value="page">Página</option></select>
+            </label>
+            <label id="excerpt-field" class="hidden">Resumen<input id="item-excerpt" maxlength="500"></label>
+            <label id="cover-field" class="hidden">URL de portada<input id="item-cover" type="url"></label>
+            <input id="item-category" type="hidden">
+            <label>Estado<select id="item-status"><option value="draft">Borrador</option><option value="published">Publicado</option></select></label>
+            <label>Contenido<textarea id="item-content" rows="8"></textarea></label>
+            <div class="editor-actions">
+              <button class="button" type="submit">Guardar</button>
+              <button id="cancel-edit" class="button button-quiet hidden" type="button">Cancelar</button>
+            </div>
+            <p id="content-status" class="status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+      <footer><span id="current-user"></span><a href="/docs" target="_blank" rel="noopener">Documentación CMS</a></footer>
+    </section>
+  </main>
+</body>
+</html>

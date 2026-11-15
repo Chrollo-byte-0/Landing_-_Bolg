@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>try{var d=document.documentElement,t=localStorage.getItem('theme');if(t)d.setAttribute('data-theme',t);if(sessionStorage.getItem('nav')){d.classList.add('nav-in');sessionStorage.removeItem('nav')}else if(document.querySelector&&!sessionStorage.getItem('seen')&&true)d.classList.add('loading')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Código &amp; Teoremas</title>
+  <meta name="description" content="Proyectos, noticias y notas del día a día sobre programación y matemáticas.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="loader" aria-hidden="true"><span>codigo&amp;teoremas</span><span class="count">0</span></div>
+
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html">codigo&amp;teoremas<i></i></a>
+    <nav>
+      <a href="#entradas">Entradas</a>
+      <button id="theme-toggle" aria-label="Cambiar tema">Oscuro</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap wide">
+  <section class="intro">
+    <h1 data-split>Proyectos, noticias y apuntes de programación y matemáticas.</h1>
+    <p>Lo que construyo, lo que leo y lo que voy aprendiendo cada día.</p>
+    <div class="formula">$e^{i\pi} + 1 = 0$</div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Proyectos <b>∑</b> Noticias <b>∫</b> Día a día <b>π</b> Código <b>∞</b> Teoremas <b>√</b> </span><span>Proyectos <b>∑</b> Noticias <b>∫</b> Día a día <b>π</b> Código <b>∞</b> Teoremas <b>√</b> </span></div></div>
+
+  <section id="entradas">
+    <div class="filters">
+      <button class="filter-btn active" data-cat="todo">Todo</button>
+      <button class="filter-btn" data-cat="proyectos">Proyectos</button>
+      <button class="filter-btn" data-cat="noticias">Noticias</button>
+      <button class="filter-btn" data-cat="dia">Día a día</button>
+      <button class="filter-btn" data-cat="notas">Notas</button>
+    </div>
+
+    <article class="entry reveal" data-cat="dia">
+      <time>14 nov 2026</time>
+      <div>
+        <h3><a href="posts/dia-a-dia-bug.html">Una semana persiguiendo un bug de redondeo</a><span class="tag">día a día</span></h3>
+        <p>Spoiler: 0.1 + 0.2 no es 0.3. Lo que aprendí sobre punto flotante.</p>
+      </div>
+    </article>
+
+    <article class="entry reveal" data-cat="proyectos">
+      <time>12 nov 2026</time>
+      <div>
+        <h3><a href="posts/proyecto-graficador.html">Proyecto: un graficador de funciones en 40 líneas</a><span class="tag">proyecto</span></h3>
+        <p>Canvas, JavaScript y un poco de cálculo para dibujar cualquier $f(x)$.</p>
+      </div>
+    </article>
+
+    <article class="entry reveal" data-cat="noticias">
+      <time>08 nov 2026</time>
+      <div>
+        <h3><a href="posts/noticia-primo-mersenne.html">Noticias: el mayor primo conocido y cómo se encuentran</a><span class="tag">noticia</span></h3>
+        <p>Un primo de Mersenne con más de 41 millones de dígitos.</p>
+      </div>
+    </article>
+
+    <article class="entry reveal" data-cat="notas">
+      <time>05 nov 2026</time>
+      <div>
+        <h3><a href="posts/criba.html">La criba de Eratóstenes: primos en $O(n \log\log n)$</a><span class="tag">nota</span></h3>
+        <p>Un algoritmo de hace 2,200 años que sigue siendo elegante.</p>
+      </div>
+    </article>
+
+    <article class="entry reveal" data-cat="notas">
+      <time>28 oct 2026</time>
+      <div>
+        <h3><a href="posts/fibonacci.html">Fibonacci, la razón áurea y una fórmula cerrada</a><span class="tag">nota</span></h3>
+        <p>De la recursión ingenua a la fórmula de Binet.</p>
+      </div>
+    </article>
+
+    <article class="entry reveal" data-cat="notas">
+      <time>20 oct 2026</time>
+      <div>
+        <h3><a href="posts/collatz.html">La conjetura de Collatz: simple de escribir, imposible de probar</a><span class="tag">nota</span></h3>
+        <p>Tres líneas de código que desafían a los matemáticos desde hace casi 90 años.</p>
+      </div>
+    </article>
+  </section>
+  <p id="cms-content-status" class="cms-content-status" role="status" aria-live="polite"></p>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Código &amp; Teoremas</div>
+</footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="js/main.js"></script>
+<script defer src="js/bg.js"></script>
+<script defer src="js/cms-content.js?v=4" data-site-id="codigo-teoremas" data-builder-url="http://localhost:8013"></script>
+<script defer src="js/metrics.js?v=2" data-site-id="codigo-teoremas" data-api-url="http://localhost:8012"></script>
+</body>
+</html>

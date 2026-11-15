@@ -1,0 +1,145 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: blogcms
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d blogcms"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  cms-api:
+    build:
+      context: .
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/blogcms
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-solo-para-desarrollo-cambialo}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      METRICS_URL: http://metrics-api:8012
+      BUILDER_URL: http://builder-api:8013
+      BUILDER_PUBLIC_URL: ${BUILDER_PUBLIC_URL:-http://localhost:8013}
+      GRAPHQL_URL: ${GRAPHQL_PUBLIC_URL:-http://localhost:8001/graphql}
+      CORS_ORIGINS: http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - cms_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      builder-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  metrics-api:
+    build:
+      context: ../metricas-api
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/blogcms
+      JWT_SECRET: ${SECRET_KEY:-dev-secret-solo-para-desarrollo-cambialo}
+      CORS_ORIGINS: ${METRICS_CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500}
+    ports:
+      - "127.0.0.1:8012:8012"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8012/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  graphql-api:
+    build:
+      context: ../graphql-api
+    environment:
+      CMS_API_URL: http://cms-api:8000
+      METRICS_API_URL: http://metrics-api:8012
+      BUILDER_API_URL: http://builder-api:8013
+      CORS_ORIGINS: http://localhost:8000,http://127.0.0.1:8000
+    ports:
+      - "127.0.0.1:8001:8001"
+    depends_on:
+      cms-api:
+        condition: service_healthy
+      metrics-api:
+        condition: service_healthy
+      builder-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  builder-api:
+    build:
+      context: ../builder-api
+    environment:
+      JWT_SECRET: ${SECRET_KEY:-dev-secret-solo-para-desarrollo-cambialo}
+      OUTPUT_DIR: /published
+      CORS_ORIGINS: ${BUILDER_CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500}
+    ports:
+      - "127.0.0.1:8013:8013"
+    volumes:
+      - published_sites:/published
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8013/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  landing-site:
+    image: python:3.12-slim
+    command: ["python", "-m", "http.server", "3000", "--bind", "0.0.0.0", "--directory", "/site"]
+    volumes:
+      - ../../../:/site:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      cms-api:
+        condition: service_healthy
+      metrics-api:
+        condition: service_healthy
+      builder-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3000/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  blog-site:
+    image: python:3.12-slim
+    command: ["python", "-m", "http.server", "5500", "--bind", "0.0.0.0", "--directory", "/site"]
+    volumes:
+      - ../../../../Blog:/site:ro
+    ports:
+      - "127.0.0.1:5500:5500"
+    depends_on:
+      metrics-api:
+        condition: service_healthy
+      builder-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5500/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+  cms_uploads:
+  published_sites:

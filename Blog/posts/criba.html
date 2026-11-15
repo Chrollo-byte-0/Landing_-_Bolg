@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>try{var d=document.documentElement,t=localStorage.getItem('theme');if(t)d.setAttribute('data-theme',t);if(sessionStorage.getItem('nav')){d.classList.add('nav-in');sessionStorage.removeItem('nav')}else if(document.querySelector&&!sessionStorage.getItem('seen')&&false)d.classList.add('loading')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La criba de Eratóstenes — Código &amp; Teoremas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html">codigo&teoremas<i></i></a>
+    <nav>
+      <a href="../index.html#entradas">Entradas</a>
+      <button id="theme-toggle" aria-label="Cambiar tema">Oscuro</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="post">
+    <header>
+      <span class="badge">nota</span>
+      <h1>La criba de Eratóstenes: primos en $O(n \log\log n)$</h1>
+      <span class="meta">5 nov 2026 · 7 min de lectura</span>
+    </header>
+
+    <p>¿Cómo encuentras todos los primos hasta $n$? Puedes probar la divisibilidad de cada número, o puedes hacer lo que hizo Eratóstenes hace más de 2,200 años: <strong>tachar los múltiplos</strong>.</p>
+
+    <h2>La idea</h2>
+    <ol>
+      <li>Escribe todos los números de 2 a $n$.</li>
+      <li>Toma el primer número sin tachar, $p$: es primo.</li>
+      <li>Tacha todos sus múltiplos $p^2, p^2+p, p^2+2p, \dots$</li>
+      <li>Repite hasta que $p^2 &gt; n$.</li>
+    </ol>
+
+    <p>Empezamos en $p^2$ porque los múltiplos menores, como $2p$ o $3p$, ya fueron tachados por primos más pequeños.</p>
+
+    <h2>Implementación</h2>
+    <pre><code><span class="kw">def</span> <span class="fn">criba</span>(n):
+    es_primo = [<span class="kw">True</span>] * (n + <span class="num">1</span>)
+    es_primo[<span class="num">0</span>] = es_primo[<span class="num">1</span>] = <span class="kw">False</span>
+    i = <span class="num">2</span>
+    <span class="kw">while</span> i * i &lt;= n:
+        <span class="kw">if</span> es_primo[i]:
+            <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(i * i, n + <span class="num">1</span>, i):
+                es_primo[j] = <span class="kw">False</span>
+        i += <span class="num">1</span>
+    <span class="kw">return</span> [k <span class="kw">for</span> k, v <span class="kw">in</span> <span class="fn">enumerate</span>(es_primo) <span class="kw">if</span> v]</code></pre>
+
+    <div class="demo">
+      <h4>▶ Pruébalo</h4>
+      <input id="sieve-input" type="number" min="2" max="100000" value="100">
+      <button id="sieve-btn">Buscar primos</button>
+      <output id="sieve-out">Resultado aquí…</output>
+    </div>
+
+    <h2>¿Por qué $O(n \log\log n)$?</h2>
+    <p>Para cada primo $p \le n$ hacemos aproximadamente $n/p$ operaciones. El total es:</p>
+
+    $$ \sum_{p \le n} \frac{n}{p} = n \sum_{p \le n} \frac{1}{p} \approx n \ln\ln n $$
+
+    <p>La última aproximación viene del teorema de Mertens sobre la suma de los inversos de los primos. Es casi lineal: $\log\log n$ crece tan despacio que para $n = 10^{9}$ vale apenas unos 3.</p>
+
+    <a class="back" href="../index.html">← Volver al blog</a>
+  </article>
+</main>
+
+<footer><p>© 2026 Código &amp; Teoremas</p></footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/bg.js"></script>
+<script defer src="../js/metrics.js?v=2" data-site-id="codigo-teoremas" data-api-url="http://localhost:8012"></script>
+</body>
+</html>

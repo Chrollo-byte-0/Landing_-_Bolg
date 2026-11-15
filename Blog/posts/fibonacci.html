@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>try{var d=document.documentElement,t=localStorage.getItem('theme');if(t)d.setAttribute('data-theme',t);if(sessionStorage.getItem('nav')){d.classList.add('nav-in');sessionStorage.removeItem('nav')}else if(document.querySelector&&!sessionStorage.getItem('seen')&&false)d.classList.add('loading')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fibonacci y la razón áurea — Código &amp; Teoremas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html">codigo&teoremas<i></i></a>
+    <nav>
+      <a href="../index.html#entradas">Entradas</a>
+      <button id="theme-toggle" aria-label="Cambiar tema">Oscuro</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="post">
+    <header>
+      <span class="badge">nota</span>
+      <h1>Fibonacci, la razón áurea y una fórmula cerrada</h1>
+      <span class="meta">28 oct 2026 · 8 min de lectura</span>
+    </header>
+
+    <p>La sucesión de Fibonacci es el «Hola mundo» de la recursión:</p>
+
+    $$ F_0 = 0,\quad F_1 = 1,\quad F_n = F_{n-1} + F_{n-2} $$
+
+    <h2>Versión ingenua: $O(\varphi^n)$</h2>
+    <pre><code><span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">return</span> n <span class="kw">if</span> n &lt; <span class="num">2</span> <span class="kw">else</span> <span class="fn">fib</span>(n - <span class="num">1</span>) + <span class="fn">fib</span>(n - <span class="num">2</span>)</code></pre>
+
+    <p>Es elegante y terrible: recalcula los mismos valores una y otra vez, con tiempo exponencial.</p>
+
+    <h2>Versión iterativa: $O(n)$</h2>
+    <pre><code><span class="kw">def</span> <span class="fn">fib</span>(n):
+    a, b = <span class="num">0</span>, <span class="num">1</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n):
+        a, b = b, a + b
+    <span class="kw">return</span> a</code></pre>
+
+    <h2>La fórmula de Binet</h2>
+    <p>Resolviendo la ecuación característica $x^2 = x + 1$ obtenemos las raíces $\varphi = \frac{1+\sqrt5}{2}$ (la razón áurea) y $\psi = \frac{1-\sqrt5}{2}$. Entonces:</p>
+
+    $$ F_n = \frac{\varphi^n - \psi^n}{\sqrt{5}} $$
+
+    <p>Como $|\psi| &lt; 1$, el término $\psi^n$ se desvanece y $F_n$ es el entero más cercano a $\varphi^n/\sqrt5$. Además:</p>
+
+    $$ \lim_{n\to\infty} \frac{F_{n+1}}{F_n} = \varphi \approx 1.6180339887 $$
+
+    <h2>Aún más rápido: $O(\log n)$</h2>
+    <p>Con multiplicación de matrices:</p>
+
+    $$ \begin{pmatrix} 1 & 1 \\ 1 & 0 \end{pmatrix}^{n} = \begin{pmatrix} F_{n+1} & F_n \\ F_n & F_{n-1} \end{pmatrix} $$
+
+    <p>Elevando la matriz por exponenciación binaria (cuadrados repetidos) calculamos $F_n$ en $O(\log n)$ multiplicaciones. Un mismo problema, tres niveles de matemáticas, tres órdenes de complejidad.</p>
+
+    <a class="back" href="../index.html">← Volver al blog</a>
+  </article>
+</main>
+
+<footer><p>© 2026 Código &amp; Teoremas</p></footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="../js/main.js"></script>
+<script defer src="../js/bg.js"></script>
+<script defer src="../js/metrics.js?v=2" data-site-id="codigo-teoremas" data-api-url="http://localhost:8012"></script>
+</body>
+</html>
