@@ -8,6 +8,7 @@
   var items = [];
   var editingId = null;
   var kind = "pages";
+  var categoryLoadPromise = Promise.resolve(true);
   var loginView = document.getElementById("login-view");
   var dashboard = document.getElementById("dashboard");
   var loginStatus = document.getElementById("login-status");
@@ -75,7 +76,10 @@
     document.getElementById("page-type-field").classList.toggle("hidden", kind !== "pages");
     document.getElementById("excerpt-field").classList.toggle("hidden", kind !== "posts");
     document.getElementById("cover-field").classList.toggle("hidden", kind !== "posts");
+    document.getElementById("category-field").classList.toggle("hidden", kind !== "posts");
+    document.getElementById("category-status").classList.toggle("hidden", kind !== "posts");
     resetEditor();
+    categoryLoadPromise = kind === "posts" ? loadCategories() : Promise.resolve(true);
     setService("graphql-dot", true);
     showStatus(contentStatus, "Cargando contenido…");
     var servicePromise = graphql("query { serviceHealth { cms metrics builder } }").then(function (data) {
@@ -106,7 +110,37 @@
     }).catch(function (error) {
       showStatus(contentStatus, error.message, "error");
     });
-    return Promise.all([servicePromise, metricsPromise, contentPromise]);
+    return Promise.all([servicePromise, metricsPromise, contentPromise, categoryLoadPromise]);
+  }
+
+  function loadCategories() {
+    var select = document.getElementById("item-category");
+    var status = document.getElementById("category-status");
+    var noCategory = document.createElement("option");
+    noCategory.value = "";
+    noCategory.textContent = "Sin categoría";
+    select.replaceChildren(noCategory);
+    select.disabled = true;
+    showStatus(status, "Cargando categorías…");
+    return fetch("/api/blogs/" + encodeURIComponent(selectedBlog.id) + "/categories", {
+      headers: { "Authorization": "Bearer " + token }
+    }).then(function (response) {
+      if (!response.ok) throw new Error("CMS respondió con HTTP " + response.status);
+      return response.json();
+    }).then(function (categories) {
+      categories.forEach(function (category) {
+        var option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+        select.appendChild(option);
+      });
+      select.disabled = false;
+      showStatus(status, categories.length ? "" : "No hay categorías disponibles para este blog.");
+      return true;
+    }).catch(function (error) {
+      showStatus(status, "No se pudieron cargar las categorías: " + error.message, "error");
+      return false;
+    });
   }
 
   function addAction(parent, label, action, className) {
@@ -167,7 +201,7 @@
     if (kind === "posts") {
       graphql("query($blog: Int!, $id: Int!) { post(blogId: $blog, postId: $id) { id title slug status excerpt coverUrl categoryId content } }",
         { blog: selectedBlog.id, id: item.id }).then(function (data) {
-        fillEditor(data.post);
+        return categoryLoadPromise.then(function () { fillEditor(data.post); });
       }).catch(function (error) {
         showStatus(contentStatus, error.message, "error");
       });

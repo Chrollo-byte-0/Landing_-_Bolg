@@ -9,7 +9,7 @@ docker compose up --build
 ```
 El stack incluye PostgreSQL, CMS, GraphQL, métricas, Builder y los servidores estáticos de landing y blog. Accesos: landing http://localhost:3000/, blog http://localhost:5500/, panel http://localhost:8000/admin/, REST http://localhost:8000/docs, GraphQL http://localhost:8001/graphql, métricas http://localhost:8012/docs y Builder http://localhost:8013/health.
 
-Al iniciar se crean, si faltan, los espacios **Landing Isaías** (`landing-isaias`) y **Código & Teoremas** (`codigo-teoremas`). El panel permite cambiar entre ellos, crear/editar/eliminar páginas o publicaciones, consultar las métricas por separado y pulsar **Publicar sitio**. Cada publicación genera un bundle en el Builder. La primera página publicada de tipo `landing` controla el título y el texto principal de la landing; el blog muestra los posts publicados del CMS. Las seis entradas estáticas existentes se migraron al CMS.
+Al iniciar se crean, si faltan, los espacios **Landing Isaías** (`landing-isaias`) y **Código & Teoremas** (`codigo-teoremas`). El panel permite cambiar entre ellos, crear/editar/eliminar páginas o publicaciones, asignar categorías existentes a las publicaciones del blog, consultar las métricas por separado y pulsar **Publicar sitio**. Cada publicación genera un bundle en el Builder. La primera página publicada de tipo `landing` controla el título y el texto principal de la landing; el blog muestra los posts publicados del CMS. Las seis entradas estáticas existentes se migraron al CMS.
 
 Compose sirve la landing en `http://localhost:3000` y el blog en `http://localhost:5500`. El Builder publica JSON; no reemplaza los archivos HTML ni el diseño existente.
 

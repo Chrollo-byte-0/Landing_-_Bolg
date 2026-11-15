@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101412">
   <title>Admin CMS | Isaías</title>
   <link rel="stylesheet" href="/admin/admin.css">
-  <script defer src="/admin/admin.js"></script>
+  <script defer src="/admin/admin.js?v=2"></script>
 </head>
 <body>
   <main class="shell">
@@ -79,7 +79,10 @@
             </label>
             <label id="excerpt-field" class="hidden">Resumen<input id="item-excerpt" maxlength="500"></label>
             <label id="cover-field" class="hidden">URL de portada<input id="item-cover" type="url"></label>
-            <input id="item-category" type="hidden">
+            <label id="category-field" class="hidden">Categoría
+              <select id="item-category"><option value="">Sin categoría</option></select>
+            </label>
+            <p id="category-status" class="status hidden" role="status" aria-live="polite"></p>
             <label>Estado<select id="item-status"><option value="draft">Borrador</option><option value="published">Publicado</option></select></label>
             <label>Contenido<textarea id="item-content" rows="8"></textarea></label>
             <div class="editor-actions">
