@@ -23,7 +23,7 @@ Copy-Item .env.example .env
 notepad .env
 ```
 
-Configura `ADMIN_EMAIL` y `ADMIN_PASSWORD`. La cuenta inicial se crea al iniciar la base de datos por primera vez; cambiar esos valores después no modifica una cuenta que ya existe. El archivo `.env` está excluido de Git y no debe subirse al repositorio.
+Configura `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `POSTGRES_PASSWORD` y `SECRET_KEY` con tus propios valores. La cuenta inicial se crea al iniciar la base de datos por primera vez; cambiar las credenciales después no modifica una cuenta que ya existe. El archivo `.env` está excluido de Git y no debe subirse al repositorio.
 
 Inicia todos los servicios:
 
