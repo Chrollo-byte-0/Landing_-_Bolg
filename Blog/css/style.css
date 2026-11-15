@@ -410,7 +410,11 @@ html.ready .bg-canvas { opacity: 1; }
 }
 html.ready .bg-formula { opacity: .85; }
 .bg-formula .katex { font-size: 1em; }
-.bg-formula .katex-display { margin: .3em 0; text-align: left; }
+.bg-formula .katex-display {
+  margin: .3em 0; text-align: left;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.bg-formula .katex-display::-webkit-scrollbar { display: none; }
 .bg-formula small { display: block; font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; }
 @media (max-width: 1023px) { .bg-formula { display: none; } }
 
