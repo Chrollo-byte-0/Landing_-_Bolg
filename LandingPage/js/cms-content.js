@@ -19,16 +19,20 @@
       var container = document.getElementById("cms-content-items");
       if (!section || !container) return;
       var pages = (bundle.pages || []).filter(function (page) {
-        return page.status === "published" && page.type === "landing";
+        return page.status === "published";
       });
-      var heroPage = pages[0];
+      var heroPage = pages.find(function (page) {
+        return page.type === "landing";
+      });
       if (heroPage) {
         var heading = document.querySelector(".hero h1");
         var lead = document.querySelector(".hero .lead");
         if (heading) heading.textContent = heroPage.title;
         if (lead) lead.textContent = heroPage.content || "";
       }
-      var additionalPages = pages.slice(1);
+      var additionalPages = pages.filter(function (page) {
+        return page !== heroPage;
+      });
       additionalPages.forEach(function (page) {
         var card = document.createElement("article");
         card.className = "cms-page-card";

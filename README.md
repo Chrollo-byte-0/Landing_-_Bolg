@@ -52,7 +52,7 @@ docker compose logs -f
 
 El panel permite alternar entre el espacio de la landing y el del blog, editar y publicar contenido, consultar el estado de GraphQL y métricas, y ver estadísticas separadas por espacio. En el editor del blog puedes asignar una categoría existente al crear o editar una publicación. Los puertos se enlazan a `127.0.0.1`; el despliegue está pensado para uso local, no para acceso público desde internet.
 
-En el espacio **Landing Isaías**, la página publicada de tipo **Landing principal** controla el título y el texto introductorio de la portada. Guarda los cambios en el CMS y pulsa **Publicar sitio** para generar el bundle que consume la landing. Las páginas publicadas de tipo **Página** todavía no se muestran en el sitio.
+En el espacio **Landing Isaías**, la página publicada de tipo **Landing principal** controla el título y el texto introductorio de la portada. Las demás páginas publicadas se muestran como tarjetas debajo del contenido existente. Guarda los cambios en el CMS y pulsa **Publicar sitio** para generar el bundle que consume la landing.
 
 ## Detener y volver a iniciar
 
