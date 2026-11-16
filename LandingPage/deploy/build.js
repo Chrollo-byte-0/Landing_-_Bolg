@@ -37,6 +37,10 @@ const replacements = [
   ["http://localhost:8013", serviceUrl("BUILDER_URL", "http://localhost:8013")],
   ["http://localhost:8012", serviceUrl("METRICS_URL", "http://localhost:8012")],
 ];
+const analyticsScripts = [
+  '<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>',
+  '<script defer src="/_vercel/insights/script.js"></script>',
+].join("\n");
 
 function copySite(source, destination) {
   fs.mkdirSync(destination, { recursive: true });
@@ -65,6 +69,7 @@ function copySite(source, destination) {
           '<p class="contact-static-notice">El formulario no está disponible en esta versión estática. Puedes escribirme por correo.</p>'
         );
       }
+      if (isVercel) html = html.replace(/<\/head>/i, analyticsScripts + "\n</head>");
       fs.writeFileSync(destinationPath, html);
     } else {
       fs.copyFileSync(sourcePath, destinationPath);

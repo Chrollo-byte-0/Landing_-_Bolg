@@ -35,6 +35,8 @@ Cada proyecto usa el framework **Other**, conserva el directorio de salida `dist
 
 El argumento `--static-only` conserva el cargador del CMS y los archivos JSON, pero omite las métricas y la función de contacto. El build del Blog incluye la plantilla de detalle y DOMPurify para sanear el HTML de las publicaciones.
 
+Web Analytics está habilitado en ambos proyectos de Vercel. En los builds de producción se agrega el script de Vercel a cada página HTML; las visitas se consultan desde **Analytics** en el panel de cada proyecto y empiezan a contabilizarse después del despliegue que incluya el script.
+
 ## Pages CMS y publicación de contenido
 
 1. Abre [app.pagescms.org](https://app.pagescms.org), inicia sesión con GitHub y autoriza Pages CMS para acceder al repositorio `Chrollo-byte-0/Landing_-_Bolg`.
