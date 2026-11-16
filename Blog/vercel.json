@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "node deploy/build.js --static-only",
+  "outputDirectory": "dist",
+  "framework": null
+}

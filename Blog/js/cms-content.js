@@ -4,27 +4,29 @@
   var script = document.currentScript;
   var siteId = script && script.dataset.siteId;
   var builderUrl = script && script.dataset.builderUrl;
-  if (!siteId || !builderUrl) return;
+  var contentUrl = script && script.dataset.contentUrl;
+  if (!contentUrl && (!siteId || !builderUrl)) return;
 
-  var status = document.getElementById("cms-content-status");
+  var status = document.getElementById("cms-content-status") ||
+    document.getElementById("cms-post-status");
   var params = new URLSearchParams(window.location.search);
   var postSlug = params.get("slug");
-  var rootUrl = builderUrl.replace(/\/$/, "") + "/api/v1/sites/" + encodeURIComponent(siteId);
-  var legacyPostSlugs = [
-    "dia-a-dia-bug", "proyecto-graficador", "noticia-primo-mersenne",
-    "criba", "fibonacci", "collatz"
-  ];
+  var rootUrl = contentUrl
+    ? new URL(contentUrl, window.location.href).toString()
+    : builderUrl.replace(/\/$/, "") + "/api/v1/sites/" + encodeURIComponent(siteId);
 
   fetch(rootUrl)
     .then(function (response) {
-      if (response.status === 404) return null;
+      if (response.status === 404) {
+        throw new Error("No se encontró el archivo de contenido publicado.");
+      }
       if (!response.ok) throw new Error("Builder respondió con HTTP " + response.status);
       return response.json();
     })
     .then(function (bundle) {
-      if (!bundle) return;
+      applySiteMetadata(bundle.site);
       if (postSlug) {
-        renderPost(bundle.posts || []);
+        renderPost(bundle.posts || [], bundle.site);
         return;
       }
       renderPosts(bundle.posts || [], bundle.categories || []);
@@ -32,6 +34,52 @@
     .catch(function (error) {
       if (status) status.textContent = "No se pudieron cargar las publicaciones del CMS: " + error.message;
     });
+
+  function parseDate(value) {
+    if (typeof value !== "string") return null;
+    var match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    var date = match
+      ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+      : new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function applySiteMetadata(site) {
+    if (!site || typeof site !== "object") return;
+    if (typeof site.title === "string") document.title = site.title;
+    if (typeof site.name === "string") {
+      document.querySelectorAll(".logo").forEach(function (logo) {
+        var textNode = Array.from(logo.childNodes).find(function (node) { return node.nodeType === 3; });
+        if (textNode) textNode.nodeValue = site.name;
+      });
+    }
+    if (typeof site.footer === "string") {
+      var footer = document.querySelector("footer .wrap");
+      if (footer) footer.textContent = site.footer;
+    }
+    var description = document.querySelector('meta[name="description"]');
+    if (description && typeof site.description === "string") description.content = site.description;
+    var heading = document.querySelector(".intro h1");
+    if (heading && typeof site.heading === "string") heading.textContent = site.heading;
+    var intro = document.querySelector(".intro > p");
+    if (intro && typeof site.intro === "string") intro.textContent = site.intro;
+    var formula = document.querySelector(".intro .formula");
+    if (formula && typeof site.formula === "string") {
+      formula.textContent = site.formula;
+      renderMath(formula);
+    }
+  }
+
+  function renderMath(element) {
+    if (window.renderMathInElement) {
+      window.renderMathInElement(element, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false }
+        ]
+      });
+    }
+  }
 
   function renderPosts(posts, categories) {
     var list = document.getElementById("entradas");
@@ -46,7 +94,9 @@
     });
     var published = posts.filter(function (post) { return post.status === "published"; });
     published.sort(function (a, b) {
-      return new Date(b.publishedAt || b.createdAt) - new Date(a.publishedAt || a.createdAt);
+      var first = parseDate(b.publishedAt || b.createdAt);
+      var second = parseDate(a.publishedAt || a.createdAt);
+      return (first ? first.getTime() : 0) - (second ? second.getTime() : 0);
     });
     published.forEach(function (post) {
       var category = categoriesById[post.categoryId];
@@ -56,9 +106,9 @@
       article.className = "entry cms-entry";
       article.dataset.cat = categorySlug;
       var time = document.createElement("time");
-      if (post.publishedAt) {
-        var date = new Date(post.publishedAt);
-        time.dateTime = date.toISOString();
+      var date = parseDate(post.publishedAt);
+      if (date) {
+        time.dateTime = post.publishedAt;
         time.textContent = date.toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" });
       } else {
         time.textContent = "CMS";
@@ -72,6 +122,7 @@
       tag.className = "tag";
       tag.textContent = category ? category.name : "CMS";
       heading.appendChild(link);
+      heading.appendChild(document.createTextNode(" "));
       heading.appendChild(tag);
       var excerpt = document.createElement("p");
       excerpt.textContent = post.excerpt || "";
@@ -88,37 +139,32 @@
     }
   }
 
-  function renderPost(posts) {
+  function renderPost(posts, site) {
     var post = posts.find(function (item) { return item.slug === postSlug && item.status === "published"; });
     if (!post) {
       document.getElementById("cms-post-title").textContent = "Publicación no disponible";
-      document.getElementById("cms-post-status").textContent = "Este contenido no existe o todavía no está publicado.";
+      status.textContent = "Este contenido no existe o todavía no está publicado.";
       return;
     }
-    document.title = post.title + " — Código & Teoremas";
+    document.title = post.title + " — " + (site && site.title ? site.title : "Código & Teoremas");
     var title = document.getElementById("cms-post-title");
     title.textContent = post.title;
     title.setAttribute("aria-label", post.title);
     document.getElementById("cms-post-excerpt").textContent = post.excerpt || "";
     var content = document.getElementById("cms-post-content");
-    content.textContent = post.content || "";
-    if (window.renderMathInElement) {
-      window.renderMathInElement(content, {
-        delimiters: [
-          { left: "$$", right: "$$", display: true },
-          { left: "$", right: "$", display: false }
-        ]
-      });
+    if (!window.DOMPurify) {
+      content.textContent = post.content || "";
+      status.textContent = "No se pudo cargar el filtro de seguridad; el contenido se muestra como texto.";
+      return;
     }
-    if (legacyPostSlugs.indexOf(post.slug) !== -1) {
-      var legacyLink = document.createElement("a");
-      legacyLink.className = "cms-post-back";
-      legacyLink.href = post.slug + ".html";
-      legacyLink.textContent = "Abrir versión original con demostraciones";
-      content.insertAdjacentElement("afterend", legacyLink);
-    }
-    document.getElementById("cms-post-date").textContent = post.publishedAt
-      ? new Date(post.publishedAt).toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric" })
+    content.innerHTML = window.DOMPurify.sanitize(post.content || "", { USE_PROFILES: { html: true } });
+    renderMath(content);
+    window.dispatchEvent(new Event("cms-content-rendered"));
+    var date = parseDate(post.publishedAt);
+    var dateElement = document.getElementById("cms-post-date");
+    dateElement.textContent = date
+      ? date.toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric" })
       : "";
+    dateElement.dateTime = date ? post.publishedAt : "";
   }
 })();

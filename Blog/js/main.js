@@ -82,11 +82,13 @@ window.addEventListener("load", () => {
 });
 
 // ---------- Demo: Collatz ----------
-const collatzBtn = document.getElementById("collatz-btn");
-if (collatzBtn) {
+function initializeCollatzDemo(container) {
+  const collatzBtn = container.querySelector("#collatz-btn");
+  if (!collatzBtn || collatzBtn.dataset.initialized) return;
+  collatzBtn.dataset.initialized = "true";
   const run = () => {
-    let n = parseInt(document.getElementById("collatz-input").value, 10);
-    const out = document.getElementById("collatz-out");
+    let n = parseInt(container.querySelector("#collatz-input").value, 10);
+    const out = container.querySelector("#collatz-out");
     out.style.whiteSpace = "pre-wrap";
     if (!Number.isInteger(n) || n < 1 || n > 1e9) {
       out.textContent = "Ingresa un entero entre 1 y 1,000,000,000.";
@@ -101,17 +103,20 @@ if (collatzBtn) {
     out.textContent = `${seq.length - 1} pasos · máximo ${Math.max(...seq)}\n${preview}`;
   };
   collatzBtn.addEventListener("click", run);
-  document.getElementById("collatz-input").addEventListener("keydown", (e) => {
+  container.querySelector("#collatz-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") run();
   });
 }
+initializeCollatzDemo(document);
 
 // ---------- Demo: Criba de Eratóstenes ----------
-const sieveBtn = document.getElementById("sieve-btn");
-if (sieveBtn) {
+function initializeSieveDemo(container) {
+  const sieveBtn = container.querySelector("#sieve-btn");
+  if (!sieveBtn || sieveBtn.dataset.initialized) return;
+  sieveBtn.dataset.initialized = "true";
   sieveBtn.addEventListener("click", () => {
-    const n = parseInt(document.getElementById("sieve-input").value, 10);
-    const out = document.getElementById("sieve-out");
+    const n = parseInt(container.querySelector("#sieve-input").value, 10);
+    const out = container.querySelector("#sieve-out");
     out.style.whiteSpace = "pre-wrap";
     if (!Number.isInteger(n) || n < 2 || n > 100000) {
       out.textContent = "Ingresa un entero entre 2 y 100,000.";
@@ -128,14 +133,17 @@ if (sieveBtn) {
       (primes.length > 80 ? primes.slice(0, 80).join(", ") + ", …" : primes.join(", "));
   });
 }
+initializeSieveDemo(document);
 
 // ---------- Demo: Graficador de funciones ----------
-const plotBtn = document.getElementById("plot-btn");
-if (plotBtn) {
-  const canvas = document.getElementById("plot-canvas");
+function initializePlotDemo(container) {
+  const plotBtn = container.querySelector("#plot-btn");
+  if (!plotBtn || plotBtn.dataset.initialized) return;
+  plotBtn.dataset.initialized = "true";
+  const canvas = container.querySelector("#plot-canvas");
   const ctx = canvas.getContext("2d");
-  const input = document.getElementById("plot-input");
-  const out = document.getElementById("plot-out");
+  const input = container.querySelector("#plot-input");
+  const out = container.querySelector("#plot-out");
 
   // Convierte "sin(x)^2 + pi" en JS seguro (solo x, números, operadores y funciones de Math)
   function compile(expr) {
@@ -194,6 +202,14 @@ if (plotBtn) {
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") draw(); });
   draw();
 }
+initializePlotDemo(document);
+window.addEventListener("cms-content-rendered", () => {
+  const content = document.getElementById("cms-post-content");
+  if (!content) return;
+  initializeCollatzDemo(content);
+  initializeSieveDemo(content);
+  initializePlotDemo(content);
+});
 
 // =====================================================================
 // Animaciones estilo epic.net (JS puro: sin GSAP)

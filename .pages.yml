@@ -1,0 +1,201 @@
+media:
+  - name: blog_media
+    label: Imágenes del blog
+    input: Blog/media
+    output: /media
+    categories: [image]
+    rename: safe
+
+content:
+  - name: landing
+    label: Landing
+    type: file
+    path: LandingPage/content/landing.json
+    format: json
+    operations:
+      delete: false
+    fields:
+      - name: site
+        label: Datos del sitio
+        type: object
+        fields:
+          - name: name
+            label: Nombre
+            type: string
+          - name: title
+            label: Título del navegador
+            type: string
+          - name: description
+            label: Descripción SEO
+            type: text
+      - name: landingContent
+        label: Secciones
+        type: object
+        fields:
+          - name: hero
+            label: Portada
+            type: object
+            fields:
+              - { name: title, label: Título, type: string }
+              - { name: lead, label: Introducción, type: text }
+              - { name: primaryLabel, label: Texto del botón principal, type: string }
+              - { name: primaryHref, label: Destino del botón principal, type: string }
+              - { name: secondaryLabel, label: Texto del botón secundario, type: string }
+              - { name: secondaryHref, label: Destino del botón secundario, type: string }
+          - name: about
+            label: Sobre mí
+            type: object
+            fields:
+              - { name: title, label: Título, type: string }
+              - name: paragraphs
+                label: Párrafos
+                type: text
+                list: true
+              - name: facts
+                label: Datos
+                type: object
+                list:
+                  collapsible:
+                    collapsed: true
+                    summary: "{label}"
+                fields:
+                  - { name: label, label: Etiqueta, type: string }
+                  - { name: value, label: Valor, type: string }
+          - name: projects
+            label: Proyectos
+            type: object
+            fields:
+              - { name: title, label: Título, type: string }
+              - name: items
+                label: Tarjetas
+                type: object
+                list:
+                  collapsible:
+                    collapsed: true
+                    summary: "{title}"
+                fields:
+                  - { name: category, label: Categoría, type: string }
+                  - { name: title, label: Nombre, type: string }
+                  - { name: description, label: Descripción, type: text }
+                  - { name: year, label: Año, type: string }
+          - name: talents
+            label: Talentos
+            type: object
+            fields:
+              - { name: title, label: Título, type: string }
+              - name: items
+                label: Talentos
+                type: string
+                list: true
+          - name: hobbies
+            label: Pasatiempos
+            type: object
+            fields:
+              - { name: title, label: Título, type: string }
+              - name: items
+                label: Pasatiempos
+                type: string
+                list: true
+          - name: contact
+            label: Contacto
+            type: object
+            fields:
+              - { name: title, label: Título, type: string }
+              - { name: description, label: Descripción, type: text }
+              - { name: email, label: Correo, type: string }
+              - { name: instagramLabel, label: Texto de Instagram, type: string }
+              - { name: instagramUrl, label: Enlace de Instagram, type: string }
+              - { name: namePlaceholder, label: Placeholder del nombre, type: string }
+              - { name: emailPlaceholder, label: Placeholder del correo, type: string }
+              - { name: messagePlaceholder, label: Placeholder del mensaje, type: string }
+              - { name: submitLabel, label: Texto del botón, type: string }
+          - name: navigation
+            label: Navegación
+            type: object
+            fields:
+              - name: items
+                label: Enlaces
+                type: object
+                list:
+                  collapsible:
+                    collapsed: true
+                    summary: "{label}"
+                fields:
+                  - { name: label, label: Texto, type: string }
+                  - { name: href, label: Destino, type: string }
+          - name: footer
+            label: Pie de página
+            type: object
+            fields:
+              - { name: text, label: Texto, type: string }
+
+  - name: blog
+    label: Blog
+    type: file
+    path: Blog/content/site.json
+    format: json
+    operations:
+      delete: false
+    fields:
+      - name: site
+        label: Datos del blog
+        type: object
+        fields:
+          - { name: name, label: Nombre de marca, type: string }
+          - { name: title, label: Título del navegador, type: string }
+          - { name: footer, label: Pie de página, type: string }
+          - { name: description, label: Descripción, type: text }
+          - { name: heading, label: Título principal, type: string }
+          - { name: intro, label: Introducción, type: text }
+          - { name: formula, label: Fórmula, type: string }
+      - name: categories
+        label: Categorías
+        type: object
+        readonly: true
+        list: true
+        fields:
+          - { name: id, label: ID, type: string }
+          - { name: name, label: Nombre, type: string }
+          - { name: slug, label: Slug, type: string }
+      - name: posts
+        label: Publicaciones
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - name: slug
+            label: Slug
+            type: string
+            required: true
+            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          - { name: title, label: Título, type: string, required: true }
+          - name: status
+            label: Estado
+            type: select
+            options:
+              values:
+                - { name: draft, label: Borrador }
+                - { name: published, label: Publicado }
+          - name: publishedAt
+            label: Fecha
+            type: date
+            options:
+              format: yyyy-MM-dd
+          - name: categoryId
+            label: Categoría
+            type: select
+            options:
+              values:
+                - { name: dia, label: Día a día }
+                - { name: proyectos, label: Proyectos }
+                - { name: noticias, label: Noticias }
+                - { name: notas, label: Notas }
+          - { name: excerpt, label: Resumen, type: text }
+          - name: content
+            label: Contenido
+            type: rich-text
+            options:
+              format: html
+              media: blog_media

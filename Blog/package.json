@@ -1,0 +1,10 @@
+{
+  "name": "blog-static-site",
+  "private": true,
+  "scripts": {
+    "build": "node deploy/build.js --static-only"
+  },
+  "dependencies": {
+    "dompurify": "^3.2.6"
+  }
+}

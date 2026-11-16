@@ -1,0 +1,89 @@
+{
+  "site": {
+    "name": "codigo&teoremas",
+    "title": "Código & Teoremas",
+    "footer": "© 2026 Código & Teoremas",
+    "description": "Proyectos, noticias y notas del día a día sobre programación y matemáticas.",
+    "heading": "Proyectos, noticias y apuntes de programación y matemáticas.",
+    "intro": "Lo que construyo, lo que leo y lo que voy aprendiendo cada día.",
+    "formula": "$e^{i\\pi} + 1 = 0$"
+  },
+  "categories": [
+    {
+      "id": "dia",
+      "name": "d\u00eda a d\u00eda",
+      "slug": "dia"
+    },
+    {
+      "id": "proyectos",
+      "name": "proyecto",
+      "slug": "proyectos"
+    },
+    {
+      "id": "noticias",
+      "name": "noticia",
+      "slug": "noticias"
+    },
+    {
+      "id": "notas",
+      "name": "nota",
+      "slug": "notas"
+    }
+  ],
+  "posts": [
+    {
+      "slug": "dia-a-dia-bug",
+      "title": "Una semana persiguiendo un bug de redondeo",
+      "status": "published",
+      "publishedAt": "2026-11-14",
+      "categoryId": "dia",
+      "excerpt": "Spoiler: 0.1 + 0.2 no es 0.3. Lo que aprendí sobre punto flotante.",
+      "content": "<p>Esta semana mi programa decía que dos números eran distintos cuando matemáticamente eran iguales. Tardé más de lo que me gustaría admitir en darme cuenta de que no era un bug de lógica.</p>\r\n\r\n    <pre><code><span class=\"fn\">console</span>.<span class=\"fn\">log</span>(<span class=\"num\">0.1</span> + <span class=\"num\">0.2</span>);          <span class=\"cm\">// 0.30000000000000004</span>\r\n<span class=\"fn\">console</span>.<span class=\"fn\">log</span>(<span class=\"num\">0.1</span> + <span class=\"num\">0.2</span> === <span class=\"num\">0.3</span>);  <span class=\"cm\">// false</span></code></pre>\r\n\r\n    <h2>Qué pasa</h2>\r\n    <p>Los números en punto flotante (IEEE 754) se guardan en binario. Igual que $1/3$ no tiene expansión decimal finita, $0.1 = 1/10$ no tiene expansión binaria finita, así que se guarda una aproximación con un error de orden $2^{-53}$.</p>\r\n\r\n    <h2>Lo que cambié</h2>\r\n    <p>Comparar con tolerancia en vez de igualdad exacta:</p>\r\n\r\n    <pre><code><span class=\"kw\">const</span> casiIgual = (a, b, eps = <span class=\"num\">1e-9</span>) =&gt; <span class=\"fn\">Math</span>.<span class=\"fn\">abs</span>(a - b) &lt; eps;\r\n<span class=\"fn\">console</span>.<span class=\"fn\">log</span>(<span class=\"fn\">casiIgual</span>(<span class=\"num\">0.1</span> + <span class=\"num\">0.2</span>, <span class=\"num\">0.3</span>)); <span class=\"cm\">// true</span></code></pre>\r\n\r\n    <blockquote>Lección de la semana: el error numérico también es matemática, y vale la pena entenderlo antes de que aparezca en producción.</blockquote>"
+    },
+    {
+      "slug": "proyecto-graficador",
+      "title": "Proyecto: un graficador de funciones en 40 líneas",
+      "status": "published",
+      "publishedAt": "2026-11-12",
+      "categoryId": "proyectos",
+      "excerpt": "Canvas, JavaScript y un poco de cálculo para dibujar cualquier $f(x)$.",
+      "content": "<p>Quería ver las funciones que aparecen en mis clases de cálculo sin abrir otro programa. El resultado es una pequeña herramienta con <code>&lt;canvas&gt;</code> que dibuja cualquier $f(x)$ que escribas.</p>\r\n\r\n    <div class=\"demo\">\r\n      <h4>▶ Pruébalo (usa x, sin, cos, tan, sqrt, abs, log, exp, pi, ^)</h4>\r\n      <input id=\"plot-input\" type=\"text\" value=\"sin(x) * x / 2\">\r\n      <button id=\"plot-btn\">Graficar</button>\r\n      <canvas id=\"plot-canvas\" width=\"640\" height=\"400\"></canvas>\r\n      <output id=\"plot-out\"></output>\r\n    </div>\r\n\r\n    <h2>Cómo funciona</h2>\r\n    <p>La idea es muestrear la función. Para cada columna de píxeles $p$ calculamos la coordenada matemática y la convertimos de vuelta a pantalla:</p>\r\n\r\n    $$ x = \\frac{p - W/2}{s}, \\qquad p_y = \\frac{H}{2} - f(x)\\cdot s $$\r\n\r\n    <p>donde $s$ es la escala (píxeles por unidad). Después se unen los puntos con líneas. Si $f(x)$ no es finito (por ejemplo $\\log(0)$), se levanta el «lápiz» para no dibujar una línea falsa.</p>\r\n\r\n    <pre><code><span class=\"kw\">const</span> x = (px - W / <span class=\"num\">2</span>) / s;\r\n<span class=\"kw\">const</span> y = <span class=\"fn\">f</span>(x);\r\n<span class=\"kw\">const</span> py = H / <span class=\"num\">2</span> - y * s;\r\n<span class=\"fn\">Number</span>.<span class=\"fn\">isFinite</span>(y) ? ctx.<span class=\"fn\">lineTo</span>(px, py) : ctx.<span class=\"fn\">moveTo</span>(px, py);</code></pre>\r\n\r\n    <h2>Próximos pasos</h2>\r\n    <ul>\r\n      <li>Zoom y desplazamiento con el ratón.</li>\r\n      <li>Derivada numérica: $f'(x) \\approx \\frac{f(x+h)-f(x-h)}{2h}$.</li>\r\n      <li>Varias funciones a la vez.</li>\r\n    </ul>"
+    },
+    {
+      "slug": "noticia-primo-mersenne",
+      "title": "Noticias: el mayor primo conocido y cómo se encuentran",
+      "status": "published",
+      "publishedAt": "2026-11-08",
+      "categoryId": "noticias",
+      "excerpt": "Un primo de Mersenne con más de 41 millones de dígitos.",
+      "content": "<p>El mayor número primo conocido, hasta donde sé, es $2^{136\\,279\\,841} - 1$, descubierto en octubre de 2024 dentro del proyecto colaborativo GIMPS. Tiene más de 41 millones de dígitos. Conviene verificar en <em>mersenne.org</em> si ya fue superado.</p>\r\n\r\n    <h2>¿Qué es un primo de Mersenne?</h2>\r\n    <p>Es un primo de la forma $M_p = 2^p - 1$, con $p$ primo. No todos los $p$ funcionan: $M_{11} = 2047 = 23 \\cdot 89$ no es primo.</p>\r\n\r\n    <h2>El test de Lucas–Lehmer</h2>\r\n    <p>Para $p$ impar, definimos $s_0 = 4$ y $s_{k+1} = s_k^2 - 2 \\pmod{M_p}$. Entonces:</p>\r\n\r\n    $$ M_p \\text{ es primo} \\iff s_{p-2} \\equiv 0 \\pmod{M_p} $$\r\n\r\n    <pre><code><span class=\"kw\">def</span> <span class=\"fn\">lucas_lehmer</span>(p):\r\n    m = (<span class=\"num\">1</span> &lt;&lt; p) - <span class=\"num\">1</span>\r\n    s = <span class=\"num\">4</span>\r\n    <span class=\"kw\">for</span> _ <span class=\"kw\">in</span> <span class=\"fn\">range</span>(p - <span class=\"num\">2</span>):\r\n        s = (s * s - <span class=\"num\">2</span>) % m\r\n    <span class=\"kw\">return</span> s == <span class=\"num\">0</span>\r\n\r\n<span class=\"fn\">print</span>([p <span class=\"kw\">for</span> p <span class=\"kw\">in</span> [<span class=\"num\">3</span>, <span class=\"num\">5</span>, <span class=\"num\">7</span>, <span class=\"num\">11</span>, <span class=\"num\">13</span>] <span class=\"kw\">if</span> <span class=\"fn\">lucas_lehmer</span>(p)])\r\n<span class=\"cm\"># [3, 5, 7, 13]</span></code></pre>\r\n\r\n    <p>Es un test muy eficiente, por eso los récords de primos suelen ser de Mersenne.</p>"
+    },
+    {
+      "slug": "criba",
+      "title": "La criba de Eratóstenes: primos en $O(n \\log\\log n)$",
+      "status": "published",
+      "publishedAt": "2026-11-05",
+      "categoryId": "notas",
+      "excerpt": "Un algoritmo de hace 2,200 años que sigue siendo elegante.",
+      "content": "<p>¿Cómo encuentras todos los primos hasta $n$? Puedes probar la divisibilidad de cada número, o puedes hacer lo que hizo Eratóstenes hace más de 2,200 años: <strong>tachar los múltiplos</strong>.</p>\r\n\r\n    <h2>La idea</h2>\r\n    <ol>\r\n      <li>Escribe todos los números de 2 a $n$.</li>\r\n      <li>Toma el primer número sin tachar, $p$: es primo.</li>\r\n      <li>Tacha todos sus múltiplos $p^2, p^2+p, p^2+2p, \\dots$</li>\r\n      <li>Repite hasta que $p^2 &gt; n$.</li>\r\n    </ol>\r\n\r\n    <p>Empezamos en $p^2$ porque los múltiplos menores, como $2p$ o $3p$, ya fueron tachados por primos más pequeños.</p>\r\n\r\n    <h2>Implementación</h2>\r\n    <pre><code><span class=\"kw\">def</span> <span class=\"fn\">criba</span>(n):\r\n    es_primo = [<span class=\"kw\">True</span>] * (n + <span class=\"num\">1</span>)\r\n    es_primo[<span class=\"num\">0</span>] = es_primo[<span class=\"num\">1</span>] = <span class=\"kw\">False</span>\r\n    i = <span class=\"num\">2</span>\r\n    <span class=\"kw\">while</span> i * i &lt;= n:\r\n        <span class=\"kw\">if</span> es_primo[i]:\r\n            <span class=\"kw\">for</span> j <span class=\"kw\">in</span> <span class=\"fn\">range</span>(i * i, n + <span class=\"num\">1</span>, i):\r\n                es_primo[j] = <span class=\"kw\">False</span>\r\n        i += <span class=\"num\">1</span>\r\n    <span class=\"kw\">return</span> [k <span class=\"kw\">for</span> k, v <span class=\"kw\">in</span> <span class=\"fn\">enumerate</span>(es_primo) <span class=\"kw\">if</span> v]</code></pre>\r\n\r\n    <div class=\"demo\">\r\n      <h4>▶ Pruébalo</h4>\r\n      <input id=\"sieve-input\" type=\"number\" min=\"2\" max=\"100000\" value=\"100\">\r\n      <button id=\"sieve-btn\">Buscar primos</button>\r\n      <output id=\"sieve-out\">Resultado aquí…</output>\r\n    </div>\r\n\r\n    <h2>¿Por qué $O(n \\log\\log n)$?</h2>\r\n    <p>Para cada primo $p \\le n$ hacemos aproximadamente $n/p$ operaciones. El total es:</p>\r\n\r\n    $$ \\sum_{p \\le n} \\frac{n}{p} = n \\sum_{p \\le n} \\frac{1}{p} \\approx n \\ln\\ln n $$\r\n\r\n    <p>La última aproximación viene del teorema de Mertens sobre la suma de los inversos de los primos. Es casi lineal: $\\log\\log n$ crece tan despacio que para $n = 10^{9}$ vale apenas unos 3.</p>"
+    },
+    {
+      "slug": "fibonacci",
+      "title": "Fibonacci, la razón áurea y una fórmula cerrada",
+      "status": "published",
+      "publishedAt": "2026-10-28",
+      "categoryId": "notas",
+      "excerpt": "De la recursión ingenua a la fórmula de Binet.",
+      "content": "<p>La sucesión de Fibonacci es el «Hola mundo» de la recursión:</p>\r\n\r\n    $$ F_0 = 0,\\quad F_1 = 1,\\quad F_n = F_{n-1} + F_{n-2} $$\r\n\r\n    <h2>Versión ingenua: $O(\\varphi^n)$</h2>\r\n    <pre><code><span class=\"kw\">def</span> <span class=\"fn\">fib</span>(n):\r\n    <span class=\"kw\">return</span> n <span class=\"kw\">if</span> n &lt; <span class=\"num\">2</span> <span class=\"kw\">else</span> <span class=\"fn\">fib</span>(n - <span class=\"num\">1</span>) + <span class=\"fn\">fib</span>(n - <span class=\"num\">2</span>)</code></pre>\r\n\r\n    <p>Es elegante y terrible: recalcula los mismos valores una y otra vez, con tiempo exponencial.</p>\r\n\r\n    <h2>Versión iterativa: $O(n)$</h2>\r\n    <pre><code><span class=\"kw\">def</span> <span class=\"fn\">fib</span>(n):\r\n    a, b = <span class=\"num\">0</span>, <span class=\"num\">1</span>\r\n    <span class=\"kw\">for</span> _ <span class=\"kw\">in</span> <span class=\"fn\">range</span>(n):\r\n        a, b = b, a + b\r\n    <span class=\"kw\">return</span> a</code></pre>\r\n\r\n    <h2>La fórmula de Binet</h2>\r\n    <p>Resolviendo la ecuación característica $x^2 = x + 1$ obtenemos las raíces $\\varphi = \\frac{1+\\sqrt5}{2}$ (la razón áurea) y $\\psi = \\frac{1-\\sqrt5}{2}$. Entonces:</p>\r\n\r\n    $$ F_n = \\frac{\\varphi^n - \\psi^n}{\\sqrt{5}} $$\r\n\r\n    <p>Como $|\\psi| &lt; 1$, el término $\\psi^n$ se desvanece y $F_n$ es el entero más cercano a $\\varphi^n/\\sqrt5$. Además:</p>\r\n\r\n    $$ \\lim_{n\\to\\infty} \\frac{F_{n+1}}{F_n} = \\varphi \\approx 1.6180339887 $$\r\n\r\n    <h2>Aún más rápido: $O(\\log n)$</h2>\r\n    <p>Con multiplicación de matrices:</p>\r\n\r\n    $$ \\begin{pmatrix} 1 & 1 \\\\ 1 & 0 \\end{pmatrix}^{n} = \\begin{pmatrix} F_{n+1} & F_n \\\\ F_n & F_{n-1} \\end{pmatrix} $$\r\n\r\n    <p>Elevando la matriz por exponenciación binaria (cuadrados repetidos) calculamos $F_n$ en $O(\\log n)$ multiplicaciones. Un mismo problema, tres niveles de matemáticas, tres órdenes de complejidad.</p>"
+    },
+    {
+      "slug": "collatz",
+      "title": "La conjetura de Collatz: simple de escribir, imposible de probar",
+      "status": "published",
+      "publishedAt": "2026-10-20",
+      "categoryId": "notas",
+      "excerpt": "Tres líneas de código que desafían a los matemáticos desde hace casi 90 años.",
+      "content": "<p>Toma cualquier entero positivo. Si es par, divídelo entre 2. Si es impar, multiplícalo por 3 y súmale 1. Repite. La conjetura afirma que, sin importar con qué número empieces, <strong>siempre llegarás a 1</strong>.</p>\r\n\r\n    <p>Formalmente, definimos la función:</p>\r\n\r\n    $$\r\n    f(n) = \\begin{cases} n/2 & \\text{si } n \\equiv 0 \\pmod 2 \\\\ 3n + 1 & \\text{si } n \\equiv 1 \\pmod 2 \\end{cases}\r\n    $$\r\n\r\n    <blockquote>Paul Erdős dijo sobre este problema: «las matemáticas aún no están preparadas para tales problemas».</blockquote>\r\n\r\n    <h2>En código</h2>\r\n    <pre><code><span class=\"kw\">def</span> <span class=\"fn\">collatz</span>(n):\r\n    pasos = <span class=\"num\">0</span>\r\n    <span class=\"kw\">while</span> n != <span class=\"num\">1</span>:\r\n        n = n // <span class=\"num\">2</span> <span class=\"kw\">if</span> n % <span class=\"num\">2</span> == <span class=\"num\">0</span> <span class=\"kw\">else</span> <span class=\"num\">3</span> * n + <span class=\"num\">1</span>\r\n        pasos += <span class=\"num\">1</span>\r\n    <span class=\"kw\">return</span> pasos\r\n\r\n<span class=\"fn\">print</span>(<span class=\"fn\">collatz</span>(<span class=\"num\">27</span>))  <span class=\"cm\"># 111 pasos</span></code></pre>\r\n\r\n    <div class=\"demo\">\r\n      <h4>▶ Pruébalo</h4>\r\n      <input id=\"collatz-input\" type=\"number\" min=\"1\" value=\"27\">\r\n      <button id=\"collatz-btn\">Calcular</button>\r\n      <output id=\"collatz-out\">Resultado aquí…</output>\r\n    </div>\r\n\r\n    <h2>¿Por qué es difícil?</h2>\r\n    <p>Los pasos $n \\to 3n+1$ hacen crecer el número, mientras que $n \\to n/2$ lo reduce. Heurísticamente, en promedio cada par de pasos multiplica por $\\sqrt{3}/2 \\approx 0.87 &lt; 1$, así que esperaríamos que las trayectorias bajen. Pero «esperar» no es demostrar: la conjetura se ha verificado por computadora hasta más de $2^{68}$ y sigue abierta.</p>"
+    }
+  ]
+}

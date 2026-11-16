@@ -1,6 +1,6 @@
 # Landing y blog de desarrollo
 
-Proyecto personal compuesto por una landing y un blog, administrados desde un CMS local. El panel también integra GraphQL, métricas y publicación de contenido.
+Proyecto personal compuesto por una landing y un blog. El contenido público se edita con Pages CMS directamente en GitHub; los servicios locales de CMS, GraphQL y métricas siguen disponibles para desarrollo.
 
 ## Requisitos
 
@@ -69,4 +69,9 @@ docker compose up -d
 - `LandingPage/`: landing y los servicios CMS, GraphQL, métricas y Builder.
 - `LandingPage/rosario-blog/rosario-blog/cms-api/docker-compose.yml`: orquesta los siete servicios.
 
-Para publicar el proyecto en internet hacen falta, además, configuración de dominio y HTTPS, secretos fuertes, orígenes CORS adecuados y una estrategia de despliegue; estos pasos no están incluidos en el entorno local.
+## Despliegue actual
+
+- Landing: https://landing-rosario-seven.vercel.app
+- Blog: https://codigo-teoremas-rosario.vercel.app
+
+Ambos sitios se publican como estáticos en Vercel. El panel web gratuito de [Pages CMS](https://app.pagescms.org) edita `LandingPage/content/landing.json` y `Blog/content/site.json`; cada cambio se guarda en GitHub y activa una nueva publicación de Vercel. El CMS local, las APIs y PostgreSQL no están desplegados; el Blueprint de Render requiere recursos de pago. Consulta [`DEPLOYMENT.md`](./DEPLOYMENT.md) para conectar Pages CMS y Vercel.

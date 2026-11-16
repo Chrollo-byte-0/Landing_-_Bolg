@@ -4,8 +4,9 @@
   var script = document.currentScript;
   var siteId = script && script.dataset.siteId;
   var builderUrl = script && script.dataset.builderUrl;
+  var contentUrl = script && script.dataset.contentUrl;
   var status = document.getElementById("cms-content-status");
-  if (!siteId || !builderUrl || !status) return;
+  if ((!contentUrl && (!siteId || !builderUrl)) || !status) return;
 
   function setText(selector, value) {
     var element = document.querySelector(selector);
@@ -142,7 +143,18 @@
     setText("footer .wrap", content.footer && content.footer.text);
   }
 
-  fetch(builderUrl.replace(/\/$/, "") + "/api/v1/sites/" + encodeURIComponent(siteId))
+  function applySiteMetadata(site) {
+    if (!site || typeof site !== "object") return;
+    setText("nav .wrap > b", site.name);
+    if (typeof site.title === "string") document.title = site.title;
+    var description = document.querySelector('meta[name="description"]');
+    if (description && typeof site.description === "string") description.content = site.description;
+  }
+
+  var sourceUrl = contentUrl
+    ? new URL(contentUrl, window.location.href).toString()
+    : builderUrl.replace(/\/$/, "") + "/api/v1/sites/" + encodeURIComponent(siteId);
+  fetch(sourceUrl)
     .then(function (response) {
       if (response.status === 404) return null;
       if (!response.ok) throw new Error("Builder respondió con HTTP " + response.status);
@@ -153,6 +165,7 @@
       var section = document.getElementById("cms-content");
       var container = document.getElementById("cms-content-items");
       if (!section || !container) return;
+      applySiteMetadata(bundle.site);
       var pages = (bundle.pages || []).filter(function (page) {
         return page.status === "published";
       });
