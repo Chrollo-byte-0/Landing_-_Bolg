@@ -36,6 +36,10 @@
         {
           "label": "Lenguajes",
           "value": "C++, Java, Python"
+        },
+        {
+          "label": "Matematicas",
+          "value": "derivar, integrar"
         }
       ]
     },
