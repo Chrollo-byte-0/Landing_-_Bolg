@@ -21,10 +21,22 @@
         "Lo que me impulsa día a día es colaborar en proyectos desafiantes e interesantes que me permitan aprender, innovar y crear un impacto positivo a través de la tecnología."
       ],
       "facts": [
-        { "label": "Ubicación", "value": "Tuxtla Gutiérrez, Chiapas, México" },
-        { "label": "Estudio", "value": "Ingeniería en Tecnologías de la Información e Innovación Digital (Software)" },
-        { "label": "Idiomas", "value": "Español, francés" },
-        { "label": "Lenguajes", "value": "C++, Java, Python" }
+        {
+          "label": "Ubicación",
+          "value": "Tuxtla Gutiérrez, Chiapas, México"
+        },
+        {
+          "label": "Estudio",
+          "value": "Ingeniería en Tecnologías de la Información e Innovación Digital (Software)"
+        },
+        {
+          "label": "Idiomas",
+          "value": "Español, francés"
+        },
+        {
+          "label": "Lenguajes",
+          "value": "C++, Java, Python"
+        }
       ]
     },
     "projects": {
@@ -52,7 +64,12 @@
     },
     "talents": {
       "title": "Talentos",
-      "items": ["Tecnología", "Matemáticas", "Planificación estratégica", "Creatividad"]
+      "items": [
+        "Tecnología",
+        "Matemáticas",
+        "Planificación estratégica",
+        "Creatividad"
+      ]
     },
     "hobbies": {
       "title": "Pasatiempos",
@@ -77,11 +94,30 @@
     },
     "navigation": {
       "items": [
-        { "label": "Sobre mí", "href": "#sobre-mi" },
-        { "label": "Proyectos", "href": "#proyectos" },
-        { "label": "Talentos", "href": "#talentos" },
-        { "label": "Pasatiempos", "href": "#pasatiempos" },
-        { "label": "Contacto", "href": "#contacto" }
+        {
+          "label": "Sobre mí",
+          "href": "#sobre-mi"
+        },
+        {
+          "label": "Proyectos",
+          "href": "#proyectos"
+        },
+        {
+          "label": "Talentos",
+          "href": "#talentos"
+        },
+        {
+          "label": "Pasatiempos",
+          "href": "#pasatiempos"
+        },
+        {
+          "label": "Contacto",
+          "href": "#contacto"
+        },
+        {
+          "label": "Bart Simpson",
+          "href": "#bart"
+        }
       ]
     },
     "footer": {
