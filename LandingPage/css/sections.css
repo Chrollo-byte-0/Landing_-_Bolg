@@ -121,9 +121,9 @@ h2 {
 }
 
 /* Paleta de colores iterativa para tarjetas */
-.card:nth-child(1) { background: var(--teal); }
-.card:nth-child(2) { background: var(--coral); }
-.card:nth-child(3) { background: var(--lime); }
+.card:nth-child(3n+1) { background: var(--teal); }
+.card:nth-child(3n+2) { background: var(--coral); }
+.card:nth-child(3n) { background: var(--lime); }
 
 .card .yr {
   font-family: var(--font-heading);
@@ -171,12 +171,12 @@ h2 {
   color: var(--on);
 }
 
-.talent:nth-child(1) { background: var(--lime); }
-.talent:nth-child(2) { background: var(--teal); }
-.talent:nth-child(3) { background: var(--coral); }
-.talent:nth-child(4) { 
-  background: var(--char); 
-  color: var(--light); 
+.talent:nth-child(4n+1) { background: var(--lime); }
+.talent:nth-child(4n+2) { background: var(--teal); }
+.talent:nth-child(4n+3) { background: var(--coral); }
+.talent:nth-child(4n) {
+  background: var(--char);
+  color: var(--light);
 }
 
 /* ----------------------------------------------------------

@@ -1,0 +1,82 @@
+DEFAULT_LANDING_CONTENT = {
+    "hero": {
+        "title": "Hola, soy Isaías.",
+        "lead": "Desarrollo proyectos donde convergen la tecnología, el diseño de bases de datos y la elegancia de las matemáticas.",
+        "primaryLabel": "Ver proyectos",
+        "primaryHref": "#proyectos",
+        "secondaryLabel": "Escríbeme",
+        "secondaryHref": "#contacto",
+    },
+    "about": {
+        "title": "Sobre mí",
+        "paragraphs": [
+            "Nací y crecí en Tuxtla Gutiérrez, la capital del estado de Chiapas, México. Desde siempre he sentido una gran fascinación por la resolución de problemas y la lógica, lo que me llevó a adentrarme en el mundo del desarrollo de software y las ciencias de la computación.",
+            "Actualmente cursando la carrera de ingeniería, perfecciono mis habilidades técnicas y me enfoco en áreas donde las matemáticas y el desarrollo tecnológico se potencian entre sí.",
+            "Lo que me impulsa día a día es colaborar en proyectos desafiantes e interesantes que me permitan aprender, innovar y crear un impacto positivo a través de la tecnología.",
+        ],
+        "facts": [
+            {"label": "Ubicación", "value": "Tuxtla Gutiérrez, Chiapas, México"},
+            {"label": "Estudio", "value": "Ingeniería en Tecnologías de la Información e Innovación Digital (Software)"},
+            {"label": "Idiomas", "value": "Español, francés"},
+            {"label": "Lenguajes", "value": "C++, Java, Python"},
+        ],
+    },
+    "projects": {
+        "title": "Proyectos",
+        "items": [
+            {
+                "category": "Aplicación web (PWA)",
+                "title": "Law Pocket",
+                "description": "Plataforma web progresiva para la gestión integral y el almacenamiento seguro de expedientes jurídicos de abogados y despachos. Mi primer proyecto comercializado con éxito.",
+                "year": "2026",
+            },
+            {
+                "category": "App móvil / EdTech",
+                "title": "Road Math",
+                "description": "Aplicación móvil que fortalece el aprendizaje de cálculo elemental y avanzado, guiando a los estudiantes por límites, derivadas e integrales.",
+                "year": "2026",
+            },
+            {
+                "category": "Educación / Emprendimiento",
+                "title": "Tutorías privadas de matemáticas",
+                "description": "Enseñanza personalizada hasta cálculo integral, que une la pedagogía con herramientas tecnológicas interactivas como Road Math.",
+                "year": "2026",
+            },
+        ],
+    },
+    "talents": {
+        "title": "Talentos",
+        "items": ["Tecnología", "Matemáticas", "Planificación estratégica", "Creatividad"],
+    },
+    "hobbies": {
+        "title": "Pasatiempos",
+        "items": [
+            "Resolver problemas de matemáticas",
+            "Jugar videojuegos",
+            "Escuchar música",
+            "Correr",
+            "Hacer ejercicio",
+        ],
+    },
+    "contact": {
+        "title": "Hablemos.",
+        "description": "¿Tienes un proyecto o una idea? Escríbeme directamente desde aquí o por mis redes.",
+        "email": "pablitoisaiasrodriguezcruz@gmail.com",
+        "instagramLabel": "Instagram",
+        "instagramUrl": "https://www.instagram.com/isaias.r_c",
+        "namePlaceholder": "Tu nombre",
+        "emailPlaceholder": "Tu correo electrónico",
+        "messagePlaceholder": "Escribe tu mensaje aquí...",
+        "submitLabel": "Enviar mensaje",
+    },
+    "navigation": {
+        "items": [
+            {"label": "Sobre mí", "href": "#sobre-mi"},
+            {"label": "Proyectos", "href": "#proyectos"},
+            {"label": "Talentos", "href": "#talentos"},
+            {"label": "Pasatiempos", "href": "#pasatiempos"},
+            {"label": "Contacto", "href": "#contacto"},
+        ],
+    },
+    "footer": {"text": "© 2026 Isaías"},
+}

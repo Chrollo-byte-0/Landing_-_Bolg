@@ -15,6 +15,8 @@
   var contentStatus = document.getElementById("content-status");
   var loginForm = document.getElementById("login-form");
   var form = document.getElementById("content-form");
+  var landingContentForm = document.getElementById("landing-content-form");
+  var landingContentStatus = document.getElementById("landing-content-status");
 
   function showStatus(element, message, type) {
     element.textContent = message || "";
@@ -73,6 +75,7 @@
     document.getElementById("site-kind").textContent = kind === "pages" ? "Landing" : "Blog";
     document.getElementById("site-slug").textContent = selectedBlog.slug;
     document.getElementById("content-title").textContent = kind === "pages" ? "Páginas" : "Publicaciones";
+    document.getElementById("landing-editor-card").classList.toggle("hidden", selectedBlog.slug !== "landing-isaias");
     document.getElementById("page-type-field").classList.toggle("hidden", kind !== "pages");
     document.getElementById("excerpt-field").classList.toggle("hidden", kind !== "posts");
     document.getElementById("cover-field").classList.toggle("hidden", kind !== "posts");
@@ -110,7 +113,108 @@
     }).catch(function (error) {
       showStatus(contentStatus, error.message, "error");
     });
-    return Promise.all([servicePromise, metricsPromise, contentPromise, categoryLoadPromise]);
+    var landingPromise = selectedBlog.slug === "landing-isaias" ? loadLandingContent() : Promise.resolve();
+    return Promise.all([servicePromise, metricsPromise, contentPromise, categoryLoadPromise, landingPromise]);
+  }
+
+  function getPath(object, path) {
+    return path.split(".").reduce(function (value, key) {
+      return value && value[key];
+    }, object);
+  }
+
+  function setPath(object, path, value) {
+    var keys = path.split(".");
+    var target = object;
+    keys.slice(0, -1).forEach(function (key) {
+      if (!target[key]) target[key] = {};
+      target = target[key];
+    });
+    target[keys[keys.length - 1]] = value;
+  }
+
+  function collectionFields(container) {
+    if (container.dataset.kind === "text") return [{ key: "text", label: container.dataset.title }];
+    return container.dataset.fields.split(",").map(function (field) {
+      var parts = field.split(":");
+      return { key: parts[0], label: parts[1] };
+    });
+  }
+
+  function addLandingRow(container, value) {
+    var row = document.createElement("div");
+    row.className = "landing-row";
+    var fields = collectionFields(container);
+    fields.forEach(function (field) {
+      var label = document.createElement("label");
+      label.textContent = field.label;
+      var input = container.dataset.kind === "text" || field.key === "description"
+        ? document.createElement("textarea")
+        : document.createElement("input");
+      if (container.dataset.kind === "text") input.rows = 2;
+      input.dataset.key = field.key;
+      input.maxLength = field.key === "description" || field.key === "text" ? 1000 : 200;
+      if (field.key === "year") input.maxLength = 4;
+      input.value = container.dataset.kind === "text" ? value || "" : (value && value[field.key]) || "";
+      label.appendChild(input);
+      row.appendChild(label);
+    });
+    var remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "mini-button remove-landing-row";
+    remove.textContent = "Quitar";
+    remove.setAttribute("aria-label", "Quitar " + container.dataset.title.toLowerCase());
+    remove.addEventListener("click", function () { row.remove(); });
+    row.appendChild(remove);
+    container.appendChild(row);
+  }
+
+  function renderLandingContent(content) {
+    landingContentForm.querySelectorAll("[data-field]").forEach(function (field) {
+      var value = getPath(content, field.dataset.field);
+      field.value = value == null ? "" : value;
+    });
+    landingContentForm.querySelectorAll(".landing-collection").forEach(function (container) {
+      container.replaceChildren();
+      var values = getPath(content, container.dataset.collection);
+      (Array.isArray(values) ? values : []).forEach(function (value) {
+        addLandingRow(container, value);
+      });
+    });
+  }
+
+  function loadLandingContent() {
+    showStatus(landingContentStatus, "Cargando contenido de la landing…");
+    return fetch("/api/blogs/" + encodeURIComponent(selectedBlog.id) + "/landing-content", {
+      headers: { "Authorization": "Bearer " + token }
+    }).then(function (response) {
+      if (!response.ok) throw new Error("CMS respondió con HTTP " + response.status);
+      return response.json();
+    }).then(function (data) {
+      renderLandingContent(data.content);
+      showStatus(landingContentStatus, "");
+    }).catch(function (error) {
+      showStatus(landingContentStatus, "No se pudo cargar el contenido: " + error.message, "error");
+    });
+  }
+
+  function collectLandingContent() {
+    var content = {};
+    landingContentForm.querySelectorAll("[data-field]").forEach(function (field) {
+      setPath(content, field.dataset.field, field.value.trim());
+    });
+    landingContentForm.querySelectorAll(".landing-collection").forEach(function (container) {
+      var values = Array.from(container.querySelectorAll(".landing-row")).map(function (row) {
+        var fields = Array.from(row.querySelectorAll("[data-key]"));
+        if (container.dataset.kind === "text") return fields[0].value.trim();
+        return fields.reduce(function (item, field) {
+          item[field.dataset.key] = field.value.trim();
+          return item;
+        }, {});
+      });
+      setPath(content, container.dataset.collection, values);
+    });
+    return content;
   }
 
   function loadCategories() {
@@ -304,6 +408,54 @@
       return loadWorkspace();
     }).catch(function (error) {
       showStatus(contentStatus, error.message, "error");
+    });
+  });
+
+  landingContentForm.querySelectorAll(".add-landing-row").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var container = landingContentForm.querySelector(
+        '.landing-collection[data-collection="' + button.dataset.collection + '"]'
+      );
+      if (container) addLandingRow(container);
+    });
+  });
+
+  landingContentForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var destinations = Array.from(landingContentForm.querySelectorAll(
+      '[data-field="hero.primaryHref"],[data-field="hero.secondaryHref"],[data-key="href"]'
+    ));
+    var invalidDestination = destinations.find(function (field) {
+      var value = field.value.trim();
+      return value && !/^#[A-Za-z0-9_-]+$/.test(value) && !/^https?:\/\/\S+$/i.test(value);
+    });
+    if (invalidDestination) {
+      showStatus(landingContentStatus, "Usa un enlace interno como #proyectos o una URL http(s) válida.", "error");
+      invalidDestination.focus();
+      return;
+    }
+
+    var button = document.getElementById("save-landing-content");
+    button.disabled = true;
+    showStatus(landingContentStatus, "Guardando contenido…");
+    fetch("/api/blogs/" + encodeURIComponent(selectedBlog.id) + "/landing-content", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ content: collectLandingContent() })
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok) throw new Error(data.message || data.detail || "No se pudo guardar el contenido.");
+        return data;
+      });
+    }).then(function () {
+      showStatus(landingContentStatus, "Cambios guardados. Pulsa «Publicar sitio» para aplicarlos a la landing.", "success");
+    }).catch(function (error) {
+      showStatus(landingContentStatus, error.message, "error");
+    }).finally(function () {
+      button.disabled = false;
     });
   });
 

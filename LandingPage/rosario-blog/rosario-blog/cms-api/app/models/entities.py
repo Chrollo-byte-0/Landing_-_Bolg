@@ -33,6 +33,7 @@ class Blog(Base):
     created_at: Mapped[datetime] = _dt()
 
     pages = relationship("Page", cascade="all, delete-orphan", order_by="Page.id")
+    landing_content = relationship("LandingContent", cascade="all, delete-orphan", uselist=False)
     posts = relationship("Post", cascade="all, delete-orphan", order_by="Post.id")
     categories = relationship("Category", cascade="all, delete-orphan", order_by="Category.id")
     media = relationship("Media", cascade="all, delete-orphan")
@@ -51,6 +52,13 @@ class Page(Base):
     status: Mapped[str] = mapped_column(String(20), default="draft")  # draft | published
     created_at: Mapped[datetime] = _dt()
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
+
+
+class LandingContent(Base):
+    __tablename__ = "landing_content"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    blog_id: Mapped[int] = mapped_column(ForeignKey("blogs.id"), unique=True, index=True)
+    content: Mapped[dict] = mapped_column(JSON)
 
 
 class Category(Base):

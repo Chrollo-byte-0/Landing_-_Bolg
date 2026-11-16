@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101412">
   <title>Admin CMS | Isaías</title>
   <link rel="stylesheet" href="/admin/admin.css">
-  <script defer src="/admin/admin.js?v=2"></script>
+  <script defer src="/admin/admin.js?v=3"></script>
 </head>
 <body>
   <main class="shell">
@@ -61,6 +61,90 @@
         <article class="metric-card"><span>Visitas</span><strong id="views">—</strong><small id="metric-mode">Cargando métricas…</small></article>
         <article class="metric-card"><span>Visitantes únicos</span><strong id="visitors">—</strong><small>Por espacio seleccionado</small></article>
         <article class="metric-card"><span>Tipo de contenido</span><strong id="site-kind">—</strong><small id="site-slug"></small></article>
+      </section>
+
+      <section id="landing-editor-card" class="content-card hidden">
+        <div class="content-heading">
+          <div><p class="eyebrow">CONTENIDO DE LANDING</p><h2>Editar secciones</h2></div>
+          <button id="save-landing-content" class="button" type="submit" form="landing-content-form">Guardar cambios</button>
+        </div>
+        <p class="muted landing-help">Los cambios se aplican al sitio al pulsar «Publicar sitio».</p>
+        <form id="landing-content-form" class="landing-editor">
+          <details class="landing-section" open>
+            <summary>Portada</summary>
+            <div class="landing-fields">
+              <label>Título<input data-field="hero.title" maxlength="160" required></label>
+              <label>Introducción<textarea data-field="hero.lead" rows="3" maxlength="1000"></textarea></label>
+              <label>Texto del botón principal<input data-field="hero.primaryLabel" maxlength="80"></label>
+              <label>Destino del botón principal<input data-field="hero.primaryHref" placeholder="#proyectos" maxlength="200"></label>
+              <label>Texto del botón secundario<input data-field="hero.secondaryLabel" maxlength="80"></label>
+              <label>Destino del botón secundario<input data-field="hero.secondaryHref" placeholder="#contacto" maxlength="200"></label>
+            </div>
+          </details>
+
+          <details class="landing-section">
+            <summary>Sobre mí y datos personales</summary>
+            <div class="landing-fields">
+              <label>Título<input data-field="about.title" maxlength="120"></label>
+              <div class="landing-collection" data-collection="about.paragraphs" data-kind="text" data-title="Párrafo"></div>
+              <button class="button button-quiet add-landing-row" data-collection="about.paragraphs" type="button">Agregar párrafo</button>
+              <div class="landing-collection" data-collection="about.facts" data-kind="fields" data-title="Dato" data-fields="label:Etiqueta,value:Valor"></div>
+              <button class="button button-quiet add-landing-row" data-collection="about.facts" type="button">Agregar dato</button>
+            </div>
+          </details>
+
+          <details class="landing-section">
+            <summary>Proyectos</summary>
+            <div class="landing-fields">
+              <label>Título de sección<input data-field="projects.title" maxlength="120"></label>
+              <div class="landing-collection" data-collection="projects.items" data-kind="fields" data-title="Proyecto" data-fields="category:Categoría,title:Nombre,description:Descripción,year:Año"></div>
+              <button class="button button-quiet add-landing-row" data-collection="projects.items" type="button">Agregar proyecto</button>
+            </div>
+          </details>
+
+          <details class="landing-section">
+            <summary>Talentos</summary>
+            <div class="landing-fields">
+              <label>Título<input data-field="talents.title" maxlength="120"></label>
+              <div class="landing-collection" data-collection="talents.items" data-kind="text" data-title="Talento"></div>
+              <button class="button button-quiet add-landing-row" data-collection="talents.items" type="button">Agregar talento</button>
+            </div>
+          </details>
+
+          <details class="landing-section">
+            <summary>Pasatiempos</summary>
+            <div class="landing-fields">
+              <label>Título<input data-field="hobbies.title" maxlength="120"></label>
+              <div class="landing-collection" data-collection="hobbies.items" data-kind="text" data-title="Pasatiempo"></div>
+              <button class="button button-quiet add-landing-row" data-collection="hobbies.items" type="button">Agregar pasatiempo</button>
+            </div>
+          </details>
+
+          <details class="landing-section">
+            <summary>Contacto</summary>
+            <div class="landing-fields">
+              <label>Título<input data-field="contact.title" maxlength="120"></label>
+              <label>Descripción<textarea data-field="contact.description" rows="3" maxlength="1000"></textarea></label>
+              <label>Correo electrónico<input data-field="contact.email" type="email" maxlength="200"></label>
+              <label>Texto del enlace de Instagram<input data-field="contact.instagramLabel" maxlength="80"></label>
+              <label>Enlace de Instagram<input data-field="contact.instagramUrl" type="url" maxlength="500"></label>
+              <label>Marcador del nombre<input data-field="contact.namePlaceholder" maxlength="100"></label>
+              <label>Marcador del correo<input data-field="contact.emailPlaceholder" maxlength="100"></label>
+              <label>Marcador del mensaje<input data-field="contact.messagePlaceholder" maxlength="200"></label>
+              <label>Texto del botón del formulario<input data-field="contact.submitLabel" maxlength="80"></label>
+            </div>
+          </details>
+
+          <details class="landing-section">
+            <summary>Navegación y pie de página</summary>
+            <div class="landing-fields">
+              <div class="landing-collection" data-collection="navigation.items" data-kind="fields" data-title="Enlace" data-fields="label:Texto,href:Destino"></div>
+              <button class="button button-quiet add-landing-row" data-collection="navigation.items" type="button">Agregar enlace</button>
+              <label>Texto del pie<input data-field="footer.text" maxlength="200"></label>
+            </div>
+          </details>
+          <p id="landing-content-status" class="status" role="status" aria-live="polite"></p>
+        </form>
       </section>
 
       <section class="content-card">

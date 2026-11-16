@@ -46,6 +46,19 @@ textarea{resize:vertical;min-height:115px}
 .empty{padding:24px 14px;text-align:center;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:13px}
 .editor{display:grid;gap:12px;padding:17px;border-radius:12px;background:#131916;border:1px solid var(--line);align-content:start}
 .editor label{font-size:12px}.editor input,.editor select,.editor textarea{font-size:13px}.editor-actions{display:flex;gap:8px}
+.landing-help{margin:14px 0}
+.landing-editor{display:grid;gap:10px}
+.landing-section{border:1px solid var(--line);border-radius:11px;background:#131916}
+.landing-section summary{padding:14px 16px;font-weight:700;cursor:pointer}
+.landing-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding:0 16px 16px}
+.landing-fields>label:has(textarea),.landing-collection{grid-column:1/-1}
+.landing-collection{display:grid;gap:8px}
+.landing-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:8px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:9px}
+.landing-row label{min-width:0}
+.landing-row label:has(textarea){grid-column:span 2}
+.landing-row .remove-landing-row{margin-top:22px}
+.add-landing-row{justify-self:start}
+@media(max-width:600px){.landing-fields{grid-template-columns:1fr}.landing-row{grid-template-columns:1fr auto}.landing-row label:has(textarea){grid-column:1/-1}.landing-row label{grid-column:1/-1}.landing-row .remove-landing-row{grid-column:2;grid-row:1;margin-top:0}}
 footer{display:flex;justify-content:space-between;gap:12px;padding:24px 2px 38px;color:var(--muted);font-size:12px}footer a{color:var(--lime)}
 @media(max-width:760px){.shell{width:min(100% - 28px,560px)}.topbar{padding:22px 0 28px}.service-grid{grid-template-columns:1fr}.service-card{padding:13px}.metrics-grid{grid-template-columns:1fr}.metric-card{grid-template-columns:1fr auto;align-items:center}.metric-card small{grid-column:1/-1}.dashboard-head{align-items:stretch;flex-direction:column}.site-picker{width:100%}.content-layout{grid-template-columns:1fr}.content-card{padding:16px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}

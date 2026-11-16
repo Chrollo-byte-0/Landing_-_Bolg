@@ -3,6 +3,7 @@ from ..models import Blog, Build, User, now
 from ..models.schemas import BlogOut, CategoryOut, PageOut, PostSummary
 from ..repository.build_repository import BuildRepository
 from ..repository.category_repository import CategoryRepository
+from ..repository.landing_content_repository import LandingContentRepository
 from ..repository.page_repository import PageRepository
 from ..repository.post_repository import PostRepository
 from .blog_service import BlogService
@@ -17,12 +18,14 @@ class BuildService:
     """Interfaz → CMS → Builder → Astro. Arma el contenido y delega la construcción."""
 
     def __init__(self, builds: BuildRepository, blogs: BlogService, pages: PageRepository,
-                 posts: PostRepository, categories: CategoryRepository, builder: BuilderClient):
+                 posts: PostRepository, categories: CategoryRepository,
+                 landing_content: LandingContentRepository, builder: BuilderClient):
         self.builds = builds
         self.blogs = blogs
         self.pages = pages
         self.posts = posts
         self.categories = categories
+        self.landing_content = landing_content
         self.builder = builder
 
     def build(self, blog_id: int, include_drafts: bool, user: User) -> Build:
@@ -62,6 +65,7 @@ class BuildService:
 
     def _make_bundle(self, blog: Blog, include_drafts: bool) -> dict:
         keep = lambda status: include_drafts or status == "published"
+        landing_content = self.landing_content.get_for_blog(blog.id)
         return {
             "blog": _dump(BlogOut, blog),
             "pages": [_dump(PageOut, p) for p in self.pages.list_by_blog(blog.id) if keep(p.status)],
@@ -71,4 +75,9 @@ class BuildService:
                 if keep(p.status)
             ],
             "categories": [_dump(CategoryOut, c) for c in self.categories.list_by_blog(blog.id)],
+            "landingContent": (
+                landing_content.content
+                if blog.slug == "landing-isaias" and landing_content
+                else None
+            ),
         }

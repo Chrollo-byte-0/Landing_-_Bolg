@@ -68,6 +68,88 @@ class PageOut(CamelModel):
     updated_at: datetime
 
 
+class LandingHeroContent(CamelModel):
+    title: str = Field(max_length=160)
+    lead: str = Field(max_length=1000)
+    primary_label: str = Field(max_length=80)
+    primary_href: str = Field(max_length=500, pattern=r"^(?:|#[A-Za-z0-9_-]+|https?://\S+)$")
+    secondary_label: str = Field(max_length=80)
+    secondary_href: str = Field(max_length=500, pattern=r"^(?:|#[A-Za-z0-9_-]+|https?://\S+)$")
+
+
+class LandingFact(CamelModel):
+    label: str = Field(max_length=120)
+    value: str = Field(max_length=500)
+
+
+class LandingAboutContent(CamelModel):
+    title: str = Field(max_length=120)
+    paragraphs: list[Annotated[str, StringConstraints(max_length=1000)]] = Field(max_length=20)
+    facts: list[LandingFact] = Field(max_length=50)
+
+
+class LandingProject(CamelModel):
+    category: str = Field(max_length=120)
+    title: str = Field(max_length=200)
+    description: str = Field(max_length=1000)
+    year: str = Field(max_length=4)
+
+
+class LandingProjectsContent(CamelModel):
+    title: str = Field(max_length=120)
+    items: list[LandingProject] = Field(max_length=50)
+
+
+class LandingListContent(CamelModel):
+    title: str = Field(max_length=120)
+    items: list[Annotated[str, StringConstraints(max_length=200)]] = Field(max_length=50)
+
+
+class LandingContactContent(CamelModel):
+    title: str = Field(max_length=120)
+    description: str = Field(max_length=1000)
+    email: str = Field(max_length=200, pattern=r"^(?:|[^\s@]+@[^\s@]+\.[^\s@]+)$")
+    instagram_label: str = Field(max_length=80)
+    instagram_url: str = Field(max_length=500, pattern=r"^(?:|https://\S+)$")
+    name_placeholder: str = Field(max_length=100)
+    email_placeholder: str = Field(max_length=100)
+    message_placeholder: str = Field(max_length=200)
+    submit_label: str = Field(max_length=80)
+
+
+class LandingNavigationLink(CamelModel):
+    label: str = Field(max_length=80)
+    href: str = Field(max_length=500, pattern=r"^(?:|#[A-Za-z0-9_-]+|https?://\S+)$")
+
+
+class LandingNavigationContent(CamelModel):
+    items: list[LandingNavigationLink] = Field(max_length=50)
+
+
+class LandingFooterContent(CamelModel):
+    text: str = Field(max_length=200)
+
+
+class LandingPageContent(CamelModel):
+    hero: LandingHeroContent
+    about: LandingAboutContent
+    projects: LandingProjectsContent
+    talents: LandingListContent
+    hobbies: LandingListContent
+    contact: LandingContactContent
+    navigation: LandingNavigationContent
+    footer: LandingFooterContent
+
+
+class LandingContentIn(CamelModel):
+    content: LandingPageContent
+
+
+class LandingContentOut(CamelModel):
+    blog_id: int
+    content: LandingPageContent
+
+
 # --- Categorías ---
 class CategoryIn(CamelModel):
     name: str = Field(min_length=1, max_length=120)

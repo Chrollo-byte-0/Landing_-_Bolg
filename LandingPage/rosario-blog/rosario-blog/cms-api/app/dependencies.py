@@ -10,6 +10,7 @@ from .models import User
 from .repository.blog_repository import BlogRepository
 from .repository.build_repository import BuildRepository
 from .repository.category_repository import CategoryRepository
+from .repository.landing_content_repository import LandingContentRepository
 from .repository.media_repository import MediaRepository
 from .repository.page_repository import PageRepository
 from .repository.post_repository import PostRepository
@@ -22,6 +23,7 @@ from .services.category_service import CategoryService
 from .services.media_service import MediaService
 from .services.metrics_client import MetricsClient
 from .services.metrics_service import MetricsService
+from .services.landing_content_service import LandingContentService
 from .services.page_service import PageService
 from .services.post_service import PostService
 
@@ -47,6 +49,10 @@ def get_post_repository(db: Session = Depends(get_db)) -> PostRepository:
 
 def get_category_repository(db: Session = Depends(get_db)) -> CategoryRepository:
     return CategoryRepository(db)
+
+
+def get_landing_content_repository(db: Session = Depends(get_db)) -> LandingContentRepository:
+    return LandingContentRepository(db)
 
 
 def get_media_repository(db: Session = Depends(get_db)) -> MediaRepository:
@@ -89,6 +95,13 @@ def get_category_service(
     return CategoryService(categories, blogs)
 
 
+def get_landing_content_service(
+    content: LandingContentRepository = Depends(get_landing_content_repository),
+    blogs: BlogService = Depends(get_blog_service),
+) -> LandingContentService:
+    return LandingContentService(content, blogs)
+
+
 def get_post_service(
     posts: PostRepository = Depends(get_post_repository),
     categories: CategoryRepository = Depends(get_category_repository),
@@ -110,9 +123,10 @@ def get_build_service(
     pages: PageRepository = Depends(get_page_repository),
     posts: PostRepository = Depends(get_post_repository),
     categories: CategoryRepository = Depends(get_category_repository),
+    landing_content: LandingContentRepository = Depends(get_landing_content_repository),
     builder: BuilderClient = Depends(get_builder_client),
 ) -> BuildService:
-    return BuildService(builds, blogs, pages, posts, categories, builder)
+    return BuildService(builds, blogs, pages, posts, categories, landing_content, builder)
 
 
 def get_metrics_service(

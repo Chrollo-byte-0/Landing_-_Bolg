@@ -189,3 +189,51 @@ def test_cms_requests_metrics_for_the_selected_site(client, auth):
         assert fake.site_ids == [blog["slug"]]
     finally:
         app.dependency_overrides.clear()
+
+
+def test_landing_content_is_editable_and_included_in_build(client, auth):
+    from copy import deepcopy
+    from app.dependencies import get_builder_client
+
+    landing = next(
+        blog for blog in client.get("/api/blogs", headers=auth).json()
+        if blog["slug"] == "landing-isaias"
+    )
+    endpoint = f"/api/blogs/{landing['id']}/landing-content"
+    original = client.get(endpoint, headers=auth)
+    assert original.status_code == 200
+    content = original.json()["content"]
+    assert content["projects"]["items"][0]["title"] == "Law Pocket"
+
+    content["hero"]["title"] = "Hola desde el CMS"
+    content["projects"]["items"].append({
+        "category": "Prueba",
+        "title": "Proyecto editable",
+        "description": "Contenido actualizado desde el administrador.",
+        "year": "2026",
+    })
+    invalid = deepcopy(content)
+    invalid["navigation"]["items"][0]["href"] = "javascript:alert(1)"
+    assert client.put(endpoint, json={"content": invalid}, headers=auth).status_code == 422
+
+    saved = client.put(endpoint, json={"content": content}, headers=auth)
+    assert saved.status_code == 200
+    assert client.get(endpoint, headers=auth).json()["content"] == content
+
+    class FakeBuilder:
+        def __init__(self):
+            self.received = None
+
+        def build(self, bundle):
+            self.received = bundle
+            return {"files": ["index.html"]}
+
+    builder = FakeBuilder()
+    app.dependency_overrides[get_builder_client] = lambda: builder
+    try:
+        response = client.post("/api/build", json={"blogId": landing["id"]}, headers=auth)
+        assert response.status_code == 201
+        assert builder.received["landingContent"]["hero"]["title"] == "Hola desde el CMS"
+        assert builder.received["landingContent"]["projects"]["items"][-1]["title"] == "Proyecto editable"
+    finally:
+        app.dependency_overrides.clear()
