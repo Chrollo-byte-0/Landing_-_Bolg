@@ -24,14 +24,14 @@ Si Render asigna otro subdominio, actualiza `GRAPHQL_URL` y `BUILDER_PUBLIC_URL`
 
 ## Vercel
 
-Crea dos proyectos conectados al mismo repositorio:
+Los dos proyectos ya están conectados al repositorio de GitHub y configurados para publicar desde estos directorios:
 
 | Proyecto | Root Directory | URL de producción |
 |---|---|---|
 | `landing-rosario` | `LandingPage` | https://landing-rosario-seven.vercel.app |
 | `codigo-teoremas-rosario` | `Blog` | https://codigo-teoremas-rosario.vercel.app |
 
-Usa el framework **Other** y conserva el comando de compilación y directorio de salida definidos en cada `vercel.json`. En el proyecto Landing se excluye también la carpeta `api` para no desplegar la función de contacto.
+Cada proyecto usa el framework **Other**, conserva el directorio de salida `dist` y ejecuta el comando estático de su `vercel.json`. En el proyecto Landing se excluye también la carpeta `api` para no desplegar la función de contacto.
 
 El argumento `--static-only` conserva el cargador del CMS y los archivos JSON, pero omite las métricas y la función de contacto. El build del Blog incluye la plantilla de detalle y DOMPurify para sanear el HTML de las publicaciones.
 
